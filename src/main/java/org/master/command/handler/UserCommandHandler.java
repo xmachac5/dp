@@ -14,7 +14,7 @@ public class UserCommandHandler {
     UserService userService;
 
     @Inject
-    @Channel("users")
+    @Channel("user-commands")
     Emitter<String> userEmitter;
 
     public void handleCreateUserCommand(String name, String email) {
