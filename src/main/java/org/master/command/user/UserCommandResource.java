@@ -1,6 +1,7 @@
 package org.master.command.user;
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -10,6 +11,8 @@ import org.master.command.user.commands.CreateUserCommand;
 import org.master.command.user.commands.DeleteUserCommand;
 import org.master.command.user.commands.UpdateUserCommand;
 import org.master.command.user.handler.UserCommandHandler;
+import org.master.dto.user.CreateUserDTO;
+import org.master.dto.user.UpdateUserDTO;
 
 @Path("/users")
 @Tag(name = "User Commands", description = "Handles commands related to user creation")
@@ -19,17 +22,16 @@ public class UserCommandResource {
     UserCommandHandler userCommandHandler;
 
     @POST
-    @Operation(summary = "Create a new user", description = "Creates a new user in the system")
-    public Response createUser(CreateUserCommand command) {
-        // Handle the command by passing it to the UserCommandHandler
-        userCommandHandler.handleCreateUserCommand(command.getName(), command.getEmail());
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createUser(@Valid CreateUserDTO createUserDTO) {
+        userCommandHandler.handleCreateUserCommand(createUserDTO);
         return Response.status(Response.Status.CREATED).build();
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateUser(UpdateUserCommand command) {
-        userCommandHandler.handleUpdateUserCommand(command);
+    public Response updateUser(@Valid UpdateUserDTO updateUserDTO) {
+        userCommandHandler.handleUpdateUserCommand(updateUserDTO);
         return Response.status(Response.Status.OK).build();
     }
 

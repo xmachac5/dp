@@ -1,24 +1,16 @@
 package org.master.command.user.commands;
 
-public class CreateUserCommand {
+import org.master.command.Command;
+import org.master.dto.user.CreateUserDTO;
 
-    private String name;
-    private String email;
+public class CreateUserCommand implements Command {
+    private final CreateUserDTO userDTO;
 
-    // Getters and setters
-    public String getName() {
-        return name;
+    public CreateUserCommand(CreateUserDTO userDTO) {
+        this.userDTO = userDTO;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public CreateUserDTO getUserDTO() {
+        return userDTO;
     }
 }

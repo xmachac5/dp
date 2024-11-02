@@ -1,30 +1,16 @@
 package org.master.command.user.commands;
 
-public class UpdateUserCommand {
-    private Long id;
-    private String name;
-    private String email;
+import org.master.command.Command;
+import org.master.dto.user.UpdateUserDTO;
 
-    // Getters and setters
+public class UpdateUserCommand implements Command {
+    private final UpdateUserDTO userDTO;
 
-
-    public Long getId() {
-        return id;
+    public UpdateUserCommand(UpdateUserDTO userDTO) {
+        this.userDTO = userDTO;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public UpdateUserDTO getUserDTO() {
+        return userDTO;
     }
 }
