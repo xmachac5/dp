@@ -1,4 +1,4 @@
-package org.master.model;
+package org.master.model.user;
 
 import jakarta.persistence.*;
 

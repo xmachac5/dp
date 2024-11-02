@@ -1,4 +1,4 @@
-package org.master.command.model;
+package org.master.command.user.commands;
 
 public class CreateUserCommand {
 
