@@ -50,7 +50,7 @@ public class UserCommandResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response changePassword(UpdatePasswordDTO updatePasswordDTO) {
         try {
-            UpdatePasswordCommand command = new UpdatePasswordCommand(updatePasswordDTO.getUserUuid(), updatePasswordDTO.getNewPassword());
+            UpdatePasswordCommand command = new UpdatePasswordCommand(updatePasswordDTO.getUuid(), updatePasswordDTO.getNewPassword());
             userCommandHandler.handleUpdatePasswordCommand(command);
             return Response.ok("Password updated successfully").build();
         } catch (IllegalArgumentException e) {

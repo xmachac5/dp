@@ -27,6 +27,7 @@ public class UserService {
         return count > 0;
     }
 
+    @Transactional
     public void createUser(CreateUserDTO createUserDTO){
 
         User newUser = new User();
@@ -83,7 +84,7 @@ public class UserService {
     }
 
 
-    private User findByLogin(String login) {
+    public User findByLogin(String login) {
         try {
             return em.createQuery("SELECT u FROM User u WHERE u.login = :login", User.class)
                     .setParameter("login", login)

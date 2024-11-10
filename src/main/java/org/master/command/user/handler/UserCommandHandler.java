@@ -31,8 +31,11 @@ public class UserCommandHandler {
     @Inject
     ObjectMapper objectMapper; // Inject Jackson's ObjectMapper for JSON conversion
 
-    @Transactional
     public void handleCreateUserCommand(CreateUserDTO createUserDTO){
+
+        if (userService.findByLogin(createUserDTO.getLogin()) != null) {
+            throw new RuntimeException("Login already exists: " + createUserDTO.getLogin());
+        }
 
         // Create the user
         userService.createUser(createUserDTO);
@@ -55,7 +58,6 @@ public class UserCommandHandler {
         // emitEvent(eventDTO);
     }
 
-    @Transactional
     public void handleUpdatePasswordCommand(UpdatePasswordCommand command){
         User user = userService.findByUuid(command.getUuid());
         if (user != null) {

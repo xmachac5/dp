@@ -7,11 +7,11 @@ public class UpdatePasswordDTO {
     private String newPassword;
 
     // Getters and setters
-    public UUID getUserUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 
-    public void setUserUuid(UUID userId) {
+    public void setUUuid(UUID userId) {
         this.uuid = userId;
     }
 
