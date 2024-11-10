@@ -11,6 +11,14 @@ public class CreateUserDTO {
     @Email
     private String email;
 
+    @NotBlank
+    private String login;
+
+    @NotBlank
+    private String password;
+
+    private String role;
+
     // Getters and setters
     public String getName() {
         return name;
@@ -24,8 +32,32 @@ public class CreateUserDTO {
         return email;
     }
 
+    public String getRole() {
+        return role;
+    }
+
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public @NotBlank String getLogin() {
+        return login;
+    }
+
+    public void setLogin(@NotBlank String login) {
+        this.login = login;
+    }
+
+    public @NotBlank String getPassword() {
+        return password;
+    }
+
+    public void setPassword(@NotBlank String password) {
+        this.password = password;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
 

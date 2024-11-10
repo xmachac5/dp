@@ -1,14 +1,16 @@
 package org.master.command.user.commands;
 
+import java.util.UUID;
+
 public class DeleteUserCommand {
-    private Long id;
+    private UUID uuid;
 
     // Getter and setter
-    public Long getId() {
-        return id;
+    public UUID getUuid() {
+        return uuid;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 }

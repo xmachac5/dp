@@ -1,5 +1,6 @@
 package org.master.command.user;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -9,10 +10,16 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.master.command.user.commands.CreateUserCommand;
 import org.master.command.user.commands.DeleteUserCommand;
+import org.master.command.user.commands.UpdatePasswordCommand;
 import org.master.command.user.commands.UpdateUserCommand;
 import org.master.command.user.handler.UserCommandHandler;
 import org.master.dto.user.CreateUserDTO;
+import org.master.dto.user.UpdatePasswordDTO;
 import org.master.dto.user.UpdateUserDTO;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.UUID;
 
 @Path("/users")
 @Tag(name = "User Commands", description = "Handles commands related to user creation")
@@ -22,24 +29,41 @@ public class UserCommandResource {
     UserCommandHandler userCommandHandler;
 
     @POST
+    @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createUser(@Valid CreateUserDTO createUserDTO) {
+    public Response createUser(@Valid CreateUserDTO createUserDTO){
         userCommandHandler.handleCreateUserCommand(createUserDTO);
         return Response.status(Response.Status.CREATED).build();
     }
 
     @PUT
+    @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateUser(@Valid UpdateUserDTO updateUserDTO) {
         userCommandHandler.handleUpdateUserCommand(updateUserDTO);
         return Response.status(Response.Status.OK).build();
     }
 
+    @POST
+    @Path("/change-password")
+    @RolesAllowed("admin")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response changePassword(UpdatePasswordDTO updatePasswordDTO) {
+        try {
+            UpdatePasswordCommand command = new UpdatePasswordCommand(updatePasswordDTO.getUserUuid(), updatePasswordDTO.getNewPassword());
+            userCommandHandler.handleUpdatePasswordCommand(command);
+            return Response.ok("Password updated successfully").build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+    }
+
     @DELETE
-    @Path("/{id}")
-    public Response deleteUser(@PathParam("id") Long id) {
+    @Path("/{uuid}")
+    @RolesAllowed("admin")
+    public Response deleteUser(@PathParam("uuid") UUID uuid) {
         DeleteUserCommand command = new DeleteUserCommand();
-        command.setId(id);
+        command.setUuid(uuid);
         userCommandHandler.handleDeleteUserCommand(command);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
