@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 import org.master.dto.user.CreateUserDTO;
 import org.master.dto.user.UserListDTO;
 import org.master.model.user.User;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,6 +57,8 @@ public class UserService {
         if (user != null) {
             user.setName(name);
             user.setEmail(email);
+            user.setUpdatedAt(LocalDateTime.now());
+            user.setUpdatedBy(getCurrentUser());
         }
         em.merge(user);
     }

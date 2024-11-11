@@ -6,6 +6,8 @@ import jakarta.persistence.PreUpdate;
 import org.master.model.user.User;
 import org.master.service.user.UserService;
 
+import java.time.LocalDateTime;
+
 public class BaseEntityListener {
 
     @PrePersist
@@ -19,13 +21,14 @@ public class BaseEntityListener {
         }
     }
 
-    @PreUpdate
+/**    @PreUpdate
     public void setUpdateFields(BaseEntity entity) {
         User currentUser = getCurrentUser();
-        if (currentUser != null) {
+        if (currentUser != null && entity.getUpdatedBy() != currentUser) {
             entity.setUpdatedBy(currentUser);
+            entity.setUpdatedAt(LocalDateTime.now());
         }
-    }
+    }**/
 
     private User getCurrentUser() {
         UserService userService = CDI.current().select(UserService.class).get();

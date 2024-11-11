@@ -44,11 +44,6 @@ public abstract class BaseEntity extends PanacheEntityBase  {
         this.createdAt = LocalDateTime.now();
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
     // Getters and setters
     public UUID getUuid() {
         return id;
@@ -77,6 +72,11 @@ public abstract class BaseEntity extends PanacheEntityBase  {
     public void setUpdatedBy(User updatedBy) {
         this.updatedBy = updatedBy;
     }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
 
     public LocalDateTime getDeletedAt() {
         return deletedAt;
