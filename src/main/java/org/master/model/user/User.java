@@ -4,11 +4,9 @@ import io.quarkus.security.jpa.Password;
 import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
-import jakarta.enterprise.inject.Default;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import org.hibernate.annotations.GenericGenerator;
 import org.master.model.BaseEntity;
 
 @Entity
@@ -29,8 +27,6 @@ public class User extends BaseEntity {
 
     @Password
     private String password;
-
-    private boolean twoFactorAuthEnabled = true;
 
     @Roles
     public String role;
@@ -70,14 +66,6 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-
-    public boolean isTwoFactorAuthEnabled() {
-        return twoFactorAuthEnabled;
-    }
-
-    public void setTwoFactorAuthEnabled(boolean twoFactorAuthEnabled) {
-        this.twoFactorAuthEnabled = twoFactorAuthEnabled;
-    }
 
     public Object getRoles() {
         return null;
