@@ -6,7 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 
 public class ScreenCreateDTO {
 
-    @Schema(type = SchemaType.OBJECT, description = "JSON data")
+    //@Schema(type = SchemaType.OBJECT, description = "JSON data")
     private JsonNode data;
 
     private String name;

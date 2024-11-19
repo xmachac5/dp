@@ -1,9 +1,9 @@
 package org.master.events.screen;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.json.Json;
-import jakarta.json.JsonString;
+import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
@@ -13,7 +13,8 @@ import java.util.UUID;
 @ApplicationScoped
 public class ScreenEventPublisher {
 
-    @Channel("screen-commands")
+    @Inject
+    @Channel("screens")
     Emitter<ScreenEvent> eventEmitter;
 
     public void publish(ScreenEventType type, UUID screenId, String name, JsonNode data) {
@@ -23,7 +24,9 @@ public class ScreenEventPublisher {
         event.setTimestamp(LocalDateTime.now());
         event.setName(name);
         event.setData(data);
-
-        eventEmitter.send(event);
+        eventEmitter.send(event)
+                .toCompletableFuture()
+                .join();
+        Log.info("test_publish");
     }
 }

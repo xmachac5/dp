@@ -35,17 +35,26 @@ public class ScreenService {
         screenWriteModel.setName(screenCreateDTO.getName());
         screenWriteModel.setData(screenCreateDTO.getData());
 
-        em.persist(screenWriteModel);
 
         screenEventPublisher.publish(ScreenEventType.ScreenCreated, screenWriteModel.getUuid(), screenWriteModel.getName(), screenWriteModel.getData());
 
-
+        em.persist(screenWriteModel);
     }
 
     public List<ScreenListDTO> getAllScreens(){
         return em.createQuery(
                         "SELECT new org.master.dto.screen.ScreenListDTO(s.id, s.name, s.data) FROM ScreenReadModel s", ScreenListDTO.class)
                 .getResultList();
+    }
+
+    @Transactional
+    public void createReadScreen(ScreenCreateDTO screenCreateDTO){
+        ScreenReadModel screenReadModel = new ScreenReadModel();
+
+        screenReadModel.setName(screenCreateDTO.getName());
+        screenReadModel.setData(screenCreateDTO.getData());
+
+        em.persist(screenReadModel);
     }
 
     public ScreenReadModel findByUuid(UUID uuid) {
