@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.master.dto.screen.ScreenCreateDTO;
+import org.master.dto.screen.ScreenReadCreateDTO;
 import org.master.model.screen.ScreenReadModel;
 import org.master.service.screen.ScreenService;
 
@@ -24,7 +25,7 @@ public class ScreenReadRepository implements PanacheRepository<ScreenReadModel> 
     }
 
 
-    public void save(ScreenCreateDTO screenCreateDTO) {
+    public void save(ScreenReadCreateDTO screenCreateDTO) {
         screenService.createReadScreen(screenCreateDTO);
     }
 }

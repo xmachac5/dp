@@ -25,6 +25,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-security'
     implementation 'io.quarkus:quarkus-security-jpa'
     implementation 'io.quarkus:quarkus-vertx-http'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.1'
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'

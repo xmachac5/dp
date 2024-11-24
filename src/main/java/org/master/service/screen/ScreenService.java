@@ -7,6 +7,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import org.master.dto.screen.ScreenCreateDTO;
 import org.master.dto.screen.ScreenListDTO;
+import org.master.dto.screen.ScreenReadCreateDTO;
 import org.master.events.screen.ScreenEventPublisher;
 import org.master.events.screen.ScreenEventType;
 import org.master.model.screen.ScreenReadModel;
@@ -35,10 +36,14 @@ public class ScreenService {
         screenWriteModel.setName(screenCreateDTO.getName());
         screenWriteModel.setData(screenCreateDTO.getData());
 
-
-        screenEventPublisher.publish(ScreenEventType.ScreenCreated, screenWriteModel.getUuid(), screenWriteModel.getName(), screenWriteModel.getData());
-
         em.persist(screenWriteModel);
+
+        screenEventPublisher.publish(
+                ScreenEventType.ScreenCreated,
+                screenWriteModel.getUuid(),
+                screenWriteModel.getName(),
+                screenWriteModel.getData()
+        );
     }
 
     public List<ScreenListDTO> getAllScreens(){
@@ -48,9 +53,10 @@ public class ScreenService {
     }
 
     @Transactional
-    public void createReadScreen(ScreenCreateDTO screenCreateDTO){
+    public void createReadScreen(ScreenReadCreateDTO screenCreateDTO){
         ScreenReadModel screenReadModel = new ScreenReadModel();
 
+        screenReadModel.setId(screenCreateDTO.getId());
         screenReadModel.setName(screenCreateDTO.getName());
         screenReadModel.setData(screenCreateDTO.getData());
 

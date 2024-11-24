@@ -1,24 +1,13 @@
-package org.master.model.screen;
+package org.master.dto.screen;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-import org.master.model.BaseEntity;
 
 import java.util.UUID;
 
-@Entity
-@Table(name = "screens_read_model")
-public class ScreenReadModel{
+public class ScreenReadCreateDTO {
 
-    @Id
-    @Column(updatable = false, nullable = false, columnDefinition = "UUID")
-    private UUID id ;
+    private UUID id;
 
-    @Column(columnDefinition = "json")
-    @JdbcTypeCode(SqlTypes.JSON)
     private JsonNode data;
 
     private String name;
