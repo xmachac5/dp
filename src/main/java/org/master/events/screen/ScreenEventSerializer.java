@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.kafka.common.serialization.Serializer;
 import java.util.Map;
 
-public class ScreenEventSerializer implements Serializer<ScreenEvent> {
+public class ScreenEventSerializer implements Serializer<ScreenCreatedEvent> {
 
     private final ObjectMapper objectMapper;
 
@@ -20,11 +20,11 @@ public class ScreenEventSerializer implements Serializer<ScreenEvent> {
     }
 
     @Override
-    public byte[] serialize(String topic, ScreenEvent data) {
+    public byte[] serialize(String topic, ScreenCreatedEvent data) {
         try {
             return objectMapper.writeValueAsBytes(data);
         } catch (Exception e) {
-            throw new RuntimeException("Error serializing ScreenEvent", e);
+            throw new RuntimeException("Error serializing ScreenCreatedEvent", e);
         }
     }
 

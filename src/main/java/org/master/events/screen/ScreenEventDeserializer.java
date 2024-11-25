@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.kafka.common.serialization.Deserializer;
 import java.util.Map;
 
-public class ScreenEventDeserializer implements Deserializer<ScreenEvent> {
+public class ScreenEventDeserializer implements Deserializer<ScreenCreatedEvent> {
 
     private final ObjectMapper objectMapper;
 
@@ -20,11 +20,11 @@ public class ScreenEventDeserializer implements Deserializer<ScreenEvent> {
     }
 
     @Override
-    public ScreenEvent deserialize(String topic, byte[] data) {
+    public ScreenCreatedEvent deserialize(String topic, byte[] data) {
         try {
-            return objectMapper.readValue(data, ScreenEvent.class);
+            return objectMapper.readValue(data, ScreenCreatedEvent.class);
         } catch (Exception e) {
-            throw new RuntimeException("Error deserializing ScreenEvent", e);
+            throw new RuntimeException("Error deserializing ScreenCreatedEvent", e);
         }
     }
 

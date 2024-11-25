@@ -1,10 +1,8 @@
-package org.master.query.screen;
+package org.master.api;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.master.dto.screen.ScreenListDTO;
@@ -22,7 +20,8 @@ public class ScreenQueryResource {
     @Path("/list")
     @RolesAllowed("admin")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getScreenList() {
+    public Response getScreenList(@QueryParam("page") @DefaultValue("0") int page,
+                                  @QueryParam("size") @DefaultValue("10") int size) {
         List<ScreenListDTO> screens = screenQUeryHandler.getScreenList();
         return Response.ok(screens).build();
     }

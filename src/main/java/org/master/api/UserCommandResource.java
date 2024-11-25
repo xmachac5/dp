@@ -1,4 +1,4 @@
-package org.master.command.user;
+package org.master.api;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -14,8 +14,6 @@ import org.master.dto.user.CreateUserDTO;
 import org.master.dto.user.UpdatePasswordDTO;
 import org.master.dto.user.UpdateUserDTO;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;
 
 @Path("/users")

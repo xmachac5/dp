@@ -1,30 +1,27 @@
 package org.master.command.screen.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.eclipse.microprofile.reactive.messaging.Channel;
-import org.eclipse.microprofile.reactive.messaging.Emitter;
-import org.master.dto.screen.ScreenCreateDTO;
+import org.master.command.screen.commands.CreateScreenCommand;
+import org.master.domain.screen.ScreenAggregate;
+import org.master.eventsourcing.EventStore;
 import org.master.service.screen.ScreenService;
+
+import java.util.UUID;
 
 @ApplicationScoped
 public class ScreenCommandHandler {
 
     @Inject
-    ScreenService screenService;
+    EventStore eventStore;
 
-    @Inject
-    ObjectMapper objectMapper; // Inject Jackson's ObjectMapper for JSON conversion
 
-    public void handleCreateScreenCommand(ScreenCreateDTO screenCreateDTO){
+    public void handle(CreateScreenCommand createScreenCommand){
 
-        if (screenService.findByName(screenCreateDTO.getName()) != null) {
-            throw new RuntimeException("Name already exists: " + screenCreateDTO.getName());
-        }
-
-        // Create the user
-        screenService.createScreen(screenCreateDTO);
+        ScreenAggregate aggregate = new ScreenAggregate(UUID.randomUUID());
+        ScreenAggregate.createScreen(createScreenCommand.getScreenCreateDTO());
+        eventStore.saveAndPublish(aggregate); // Save and publish events
 
     }
 }

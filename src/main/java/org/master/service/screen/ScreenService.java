@@ -8,8 +8,7 @@ import jakarta.transaction.Transactional;
 import org.master.dto.screen.ScreenCreateDTO;
 import org.master.dto.screen.ScreenListDTO;
 import org.master.dto.screen.ScreenReadCreateDTO;
-import org.master.events.screen.ScreenEventPublisher;
-import org.master.events.screen.ScreenEventType;
+import org.master.eventsourcing.ScreenEventPublisher;
 import org.master.model.screen.ScreenReadModel;
 import org.master.model.screen.ScreenWriteModel;
 import org.master.repository.screen.ScreenWriteRepository;
@@ -37,13 +36,6 @@ public class ScreenService {
         screenWriteModel.setData(screenCreateDTO.getData());
 
         em.persist(screenWriteModel);
-
-        screenEventPublisher.publish(
-                ScreenEventType.ScreenCreated,
-                screenWriteModel.getUuid(),
-                screenWriteModel.getName(),
-                screenWriteModel.getData()
-        );
     }
 
     public List<ScreenListDTO> getAllScreens(){

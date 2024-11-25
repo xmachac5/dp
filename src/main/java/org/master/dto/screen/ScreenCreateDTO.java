@@ -1,14 +1,18 @@
 package org.master.dto.screen;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class ScreenCreateDTO {
 
     //@Schema(type = SchemaType.OBJECT, description = "JSON data")
+    @NotNull
     private JsonNode data;
 
+    @NotBlank
+    @Size(min = 5, max = 100)
     private String name;
 
     public JsonNode getData() {
