@@ -6,6 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.master.events.BaseEvent;
 import org.master.events.screen.ScreenCreatedEvent;
@@ -25,17 +26,12 @@ public class ScreenEventListener {
 
     @ActivateRequestContext
     @Incoming("screen-commands")
-    public void consume(String eventPayload) {
-        try {
-            BaseEvent event = new ObjectMapper().readValue(eventPayload, BaseEvent.class);
-
-            if (event instanceof ScreenCreatedEvent) {
-                handle((ScreenCreatedEvent) event);
-            } else if (event instanceof ScreenUpdatedEvent) {
-                handle((ScreenUpdatedEvent) event);
-            }
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to deserialize event", e);
+    @Transactional
+    public void consume(BaseEvent event) {
+        if (event instanceof ScreenCreatedEvent) {
+            handle((ScreenCreatedEvent) event);
+        } else if (event instanceof ScreenUpdatedEvent) {
+            handle((ScreenUpdatedEvent) event);
         }
     }
 

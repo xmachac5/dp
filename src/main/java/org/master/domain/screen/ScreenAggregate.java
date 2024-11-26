@@ -1,6 +1,7 @@
 package org.master.domain.screen;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.Getter;
 import org.master.domain.AggregateRoot;
 import org.master.dto.screen.ScreenCreateDTO;
 import org.master.events.BaseEvent;
@@ -8,10 +9,11 @@ import org.master.events.screen.ScreenCreatedEvent;
 import org.master.events.screen.ScreenUpdatedEvent;
 import java.util.UUID;
 
+@Getter
 public class ScreenAggregate extends AggregateRoot {
 
     private String name;
-    private JsonNode data; // Assuming data is stored as a simple string for this example
+    private JsonNode data;
 
     public ScreenAggregate(UUID id) {
         super(id);
@@ -19,8 +21,15 @@ public class ScreenAggregate extends AggregateRoot {
 
     // Factory method to create a new ScreenAggregate
     public static ScreenAggregate createScreen(ScreenCreateDTO screenCreateDTO) {
-        ScreenAggregate aggregate = new ScreenAggregate(UUID.randomUUID());
-        aggregate.apply(new ScreenCreatedEvent(aggregate.getId(), screenCreateDTO.getName(), screenCreateDTO.getData()));
+        UUID id = UUID.randomUUID(); // Generate a new UUID for the aggregate
+        ScreenAggregate aggregate = new ScreenAggregate(id);
+        // Creating the ScreenCreatedEvent with all necessary data
+        ScreenCreatedEvent event = new ScreenCreatedEvent(
+                id,
+                screenCreateDTO.getName(),
+                screenCreateDTO.getData()
+        );
+        aggregate.apply(event);
         return aggregate;
     }
 

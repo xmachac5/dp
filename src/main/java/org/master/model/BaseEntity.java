@@ -2,6 +2,8 @@ package org.master.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.master.model.user.User;
 
@@ -18,23 +20,32 @@ public abstract class BaseEntity extends PanacheEntityBase  {
     @Column(updatable = false, nullable = false, columnDefinition = "UUID")
     private UUID id ;
 
+    @Getter
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Setter
+    @Getter
     @ManyToOne
     @JoinColumn(name = "created_by", updatable = false, referencedColumnName = "id")
     private User createdBy;
 
+    @Setter
+    @Getter
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Setter
+    @Getter
     @ManyToOne
     @JoinColumn(name = "updated_by", referencedColumnName = "id")
     private User  updatedBy;
 
+    @Getter
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Getter
     @ManyToOne
     @JoinColumn(name = "deleted_by", referencedColumnName = "id")
     private User deletedBy;
@@ -49,42 +60,6 @@ public abstract class BaseEntity extends PanacheEntityBase  {
         return id;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public User getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(User updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-
-    public LocalDateTime getDeletedAt() {
-        return deletedAt;
-    }
-
-    public User getDeletedBy() {
-        return deletedBy;
-    }
 
     public void setDeleted(User deletedBy, LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;

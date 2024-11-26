@@ -1,14 +1,11 @@
 package org.master.command.screen.handler;
 
-import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.master.command.screen.commands.CreateScreenCommand;
 import org.master.domain.screen.ScreenAggregate;
 import org.master.eventsourcing.EventStore;
-import org.master.service.screen.ScreenService;
-
-import java.util.UUID;
 
 @ApplicationScoped
 public class ScreenCommandHandler {
@@ -17,11 +14,12 @@ public class ScreenCommandHandler {
     EventStore eventStore;
 
 
-    public void handle(CreateScreenCommand createScreenCommand){
+    @Transactional
+    public void handle(CreateScreenCommand command) {
+        // Use factory method to create a new aggregate
+        ScreenAggregate aggregate = ScreenAggregate.createScreen(command.getScreenCreateDTO());
 
-        ScreenAggregate aggregate = new ScreenAggregate(UUID.randomUUID());
-        ScreenAggregate.createScreen(createScreenCommand.getScreenCreateDTO());
-        eventStore.saveAndPublish(aggregate); // Save and publish events
-
+        // Persist and publish events
+        eventStore.saveAndPublish(aggregate);
     }
 }

@@ -1,7 +1,6 @@
 package org.master.eventsourcing;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -13,14 +12,9 @@ public class ScreenEventPublisher {
 
     @Inject
     @Channel("screens")
-    Emitter<String> eventEmitter;
+    Emitter<BaseEvent> eventEmitter;
 
     public void publish(BaseEvent event) {
-        try {
-            String eventPayload = new ObjectMapper().writeValueAsString(event);
-            eventEmitter.send(eventPayload);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to serialize event", e);
-        }
+        eventEmitter.send(event).toCompletableFuture().join();
     }
 }

@@ -23,12 +23,12 @@ public abstract class AggregateRoot {
     /**
      * Apply an event to this aggregate, mutating its state.
      */
-    protected void apply(BaseEvent  event) {
+    public void apply(BaseEvent  event) {
         // Mutate the state
-        when(event);
+        this.when(event);
 
         // Track the event as an uncommitted change
-        uncommittedChanges.add(event);
+        this.uncommittedChanges.add(event);
     }
 
     /**

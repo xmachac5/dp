@@ -1,17 +1,27 @@
 package org.master.events.screen;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.kafka.common.serialization.Deserializer;
+import org.master.events.BaseEvent;
+
+import jakarta.inject.Singleton;
+
 import java.util.Map;
 
-public class ScreenEventDeserializer implements Deserializer<ScreenCreatedEvent> {
+@Singleton
+public class ScreenEventDeserializer implements Deserializer<BaseEvent> {
 
     private final ObjectMapper objectMapper;
 
     public ScreenEventDeserializer() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.activateDefaultTyping(
+                objectMapper.getPolymorphicTypeValidator(),
+                ObjectMapper.DefaultTyping.NON_FINAL
+        );
     }
 
     @Override
@@ -20,11 +30,20 @@ public class ScreenEventDeserializer implements Deserializer<ScreenCreatedEvent>
     }
 
     @Override
-    public ScreenCreatedEvent deserialize(String topic, byte[] data) {
+    public BaseEvent deserialize(String topic, byte[] data) {
         try {
-            return objectMapper.readValue(data, ScreenCreatedEvent.class);
+            return objectMapper.readValue(data, BaseEvent.class);
         } catch (Exception e) {
             throw new RuntimeException("Error deserializing ScreenCreatedEvent", e);
+        }
+    }
+
+    public BaseEvent deserialize(String payload) {
+        try {
+            // Use polymorphism or type hints to deserialize into the correct event type
+            return objectMapper.readValue(payload, BaseEvent.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error deserializing event payload", e);
         }
     }
 
