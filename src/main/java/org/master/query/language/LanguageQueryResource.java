@@ -1,4 +1,4 @@
-package org.master.api.language;
+package org.master.query.language;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;

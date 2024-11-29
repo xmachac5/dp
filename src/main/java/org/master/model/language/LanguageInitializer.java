@@ -1,7 +1,8 @@
 package org.master.model.language;
 
-import jakarta.annotation.PostConstruct;
+import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.master.repository.language.LanguageRepository;
@@ -11,9 +12,8 @@ public class LanguageInitializer {
     @Inject
     LanguageRepository languageRepository;
 
-    @PostConstruct
     @Transactional
-    public void init() {
+    public void onStart(@Observes StartupEvent ev) {
         if (languageRepository.count() == 0) {
             languageRepository.persist(new Language("English", "en", true));
             languageRepository.persist(new Language("Czech", "cs", true));

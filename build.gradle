@@ -26,6 +26,9 @@ dependencies {
     implementation 'io.quarkus:quarkus-security-jpa'
     implementation 'io.quarkus:quarkus-vertx-http'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.1'
+    implementation 'io.quarkus:quarkus-elytron-security'
+    implementation 'io.quarkus:quarkus-elytron-security-common'
+
 
     compileOnly 'org.projectlombok:lombok:1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'

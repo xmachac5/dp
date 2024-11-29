@@ -1,4 +1,4 @@
-package org.master.api.language;
+package org.master.command.language;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -24,7 +24,7 @@ public class LanguageCommandResource {
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response setAllowedTrue(LanguageUpdateAllowedDTO languageUpdateAllowedDTO) {
-        return setAllowed(languageUpdateAllowedDTO);
+        return setAllowed(languageUpdateAllowedDTO, true);
     }
 
     @PUT
@@ -32,12 +32,12 @@ public class LanguageCommandResource {
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response setAllowedFalse(LanguageUpdateAllowedDTO languageUpdateAllowedDTO) {
-        return setAllowed(languageUpdateAllowedDTO);
+        return setAllowed(languageUpdateAllowedDTO, false);
     }
 
-    private Response setAllowed(LanguageUpdateAllowedDTO languageUpdateAllowedDTO) {
+    private Response setAllowed(LanguageUpdateAllowedDTO languageUpdateAllowedDTO, Boolean allowed) {
         try {
-            UpdateAllowedCommand command = new UpdateAllowedCommand(languageUpdateAllowedDTO.getId(), languageUpdateAllowedDTO.getAllowed());
+            UpdateAllowedCommand command = new UpdateAllowedCommand(languageUpdateAllowedDTO.getId(), allowed);
             languageCommandHandler.handleUpdateAllowedCommand(command);
             return Response.ok("Allowed set to true successfully").build();
         } catch (IllegalArgumentException e) {

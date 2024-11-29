@@ -10,5 +10,4 @@ import java.util.UUID;
 public class LanguageUpdateAllowedDTO {
 
     private UUID id;
-    private Boolean allowed;
 }

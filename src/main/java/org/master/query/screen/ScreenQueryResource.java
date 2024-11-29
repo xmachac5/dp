@@ -1,4 +1,4 @@
-package org.master.api.screen;
+package org.master.query.screen;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;

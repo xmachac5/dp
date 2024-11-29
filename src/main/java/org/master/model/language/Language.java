@@ -18,5 +18,9 @@ public class Language extends BaseEntity {
 
     public Language() {}
 
-    public Language(String name, String code, Boolean allowed) {}
+    public Language(String name, String code, Boolean allowed) {
+        this.name = name;
+        this.code = code;
+        this.allowed = allowed;
+    }
 }
