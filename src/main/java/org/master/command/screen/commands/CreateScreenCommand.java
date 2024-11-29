@@ -1,17 +1,25 @@
 package org.master.command.screen.commands;
 
-import lombok.Getter;
-import org.master.command.Command;
-import org.master.dto.screen.ScreenCreateDTO;
-import org.master.dto.user.CreateUserDTO;
+import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-@Getter
-public class CreateScreenCommand implements Command {
+import java.util.List;
+import java.util.UUID;
 
-    private final ScreenCreateDTO screenCreateDTO;
 
-    public CreateScreenCommand(ScreenCreateDTO screenCreateDTO) {
-        this.screenCreateDTO = screenCreateDTO;
-    }
-
-}
+public record CreateScreenCommand(
+        @NotNull JsonNode data,
+        @NotBlank @Size(min = 5, max = 100) String name,
+        @NotNull Integer columns,
+        @NotBlank List<Integer> rowHeights,
+        @NotBlank UUID primaryLanguageId,
+        @NotBlank String url,
+        List<Integer> rowMaxHeights,
+        JsonNode locals,
+        JsonNode variableInit,
+        JsonNode variableInitMapping,
+        JsonNode background,
+        String title
+){}

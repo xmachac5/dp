@@ -24,13 +24,4 @@ public class LanguageService {
                         "SELECT new org.master.dto.language.LanguageListDTO(l.id, l.code, l.allowed) FROM Language l", LanguageListDTO.class)
                 .getResultList();
     }
-
-    @Transactional
-    public void setAllowed(UUID uuid, Boolean allowed) {
-        Language language = em.find(Language.class, uuid);
-        if (language != null) {
-            language.setAllowed(allowed);
-        }
-        em.merge(language);
-    }
 }

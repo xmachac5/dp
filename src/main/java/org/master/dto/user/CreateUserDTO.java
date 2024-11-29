@@ -5,15 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+@Setter
+@Getter
 public class CreateUserDTO {
     // Getters and setters
-    @Setter
-    @Getter
     @NotBlank
     private String name;
 
-    @Setter
-    @Getter
     @NotBlank
     @Email
     private String email;
@@ -24,25 +22,5 @@ public class CreateUserDTO {
     @NotBlank
     private String password;
 
-    @Setter
-    @Getter
     private String role;
-
-    public @NotBlank String getLogin() {
-        return login;
-    }
-
-    public void setLogin(@NotBlank String login) {
-        this.login = login;
-    }
-
-    public @NotBlank String getPassword() {
-        return password;
-    }
-
-    public void setPassword(@NotBlank String password) {
-        this.password = password;
-    }
-
 }
-

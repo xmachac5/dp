@@ -7,6 +7,8 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.master.repository.language.LanguageRepository;
 
+import java.util.UUID;
+
 @ApplicationScoped
 public class LanguageInitializer {
     @Inject
@@ -15,10 +17,10 @@ public class LanguageInitializer {
     @Transactional
     public void onStart(@Observes StartupEvent ev) {
         if (languageRepository.count() == 0) {
-            languageRepository.persist(new Language("English", "en", true));
-            languageRepository.persist(new Language("Czech", "cs", true));
-            languageRepository.persist(new Language("German", "ge", false));
-            languageRepository.persist(new Language("Slovak", "sk", false));
+            languageRepository.persist(new Language(UUID.randomUUID(),"English", "en", true));
+            languageRepository.persist(new Language(UUID.randomUUID(),"Czech", "cs", true));
+            languageRepository.persist(new Language(UUID.randomUUID(),"German", "ge", false));
+            languageRepository.persist(new Language(UUID.randomUUID(),"Slovak", "sk", false));
         }
     }
 }

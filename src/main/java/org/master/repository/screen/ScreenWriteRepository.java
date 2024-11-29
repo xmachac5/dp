@@ -1,14 +1,19 @@
 package org.master.repository.screen;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import org.master.command.screen.commands.CreateScreenCommand;
+import org.master.command.screen.commands.UpdateScreenCommand;
 import org.master.domain.screen.ScreenAggregate;
 import org.master.events.BaseEvent;
 import org.master.events.screen.ScreenEventDeserializer;
 import org.master.model.Event;
 import org.master.model.screen.ScreenWriteModel;
+import org.master.repository.language.LanguageRepository;
+import org.master.service.language.LanguageService;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +27,51 @@ public class ScreenWriteRepository implements PanacheRepository<ScreenWriteModel
 
     @Inject
     ScreenEventDeserializer screenEventDeserializer;
+
+    @Inject
+    LanguageRepository languageRepository;
+
+    public void create(UUID id, CreateScreenCommand createScreenCommand) {
+        ScreenWriteModel screenWriteModel = new ScreenWriteModel();
+        screenWriteModel.setId(id);
+        setScreenData(screenWriteModel, createScreenCommand.data(), createScreenCommand.name(),
+                createScreenCommand.columns(), createScreenCommand.rowHeights(),
+                createScreenCommand.primaryLanguageId(), createScreenCommand.url(), createScreenCommand.rowMaxHeights(),
+                createScreenCommand.locals(), createScreenCommand.variableInit(),
+                createScreenCommand.variableInitMapping(), createScreenCommand.background(), createScreenCommand.title());
+
+        em.persist(screenWriteModel);
+    }
+
+    public void update(UpdateScreenCommand updateScreenCommand ) {
+        ScreenWriteModel screenWriteModel = em.find(ScreenWriteModel.class, updateScreenCommand.id());
+        setScreenData(screenWriteModel, updateScreenCommand.data(), updateScreenCommand.name(),
+                updateScreenCommand.columns(), updateScreenCommand.rowHeights(),
+                updateScreenCommand.primaryLanguageId(), updateScreenCommand.url(),
+                updateScreenCommand.rowMaxHeights(), updateScreenCommand.locals(), updateScreenCommand.variableInit(),
+                updateScreenCommand.variableInitMapping(), updateScreenCommand.background(),
+                updateScreenCommand.title());
+
+        em.merge(screenWriteModel);
+    }
+
+    private void setScreenData(ScreenWriteModel screenWriteModel, JsonNode data, String name, Integer columns,
+                               List<Integer> integers, UUID uuid, String url, List<Integer> integers2,
+                               JsonNode locals, JsonNode jsonNode, JsonNode jsonNode2, JsonNode background,
+                               String title) {
+        screenWriteModel.setData(data);
+        screenWriteModel.setName(name);
+        screenWriteModel.setColumns(columns);
+        screenWriteModel.setRowHeights(integers);
+        screenWriteModel.setPrimaryLanguage(languageRepository.findByUuid(uuid));
+        screenWriteModel.setUrl(url);
+        screenWriteModel.setRowMaxHeights(integers2);
+        screenWriteModel.setLocals(locals);
+        screenWriteModel.setVariableInit(jsonNode);
+        screenWriteModel.setVariableInitMapping(jsonNode2);
+        screenWriteModel.setBackground(background);
+        screenWriteModel.setTitle(title);
+    }
 
     public ScreenAggregate load(UUID aggregateId) {
         // Fetch events from the database

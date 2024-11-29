@@ -1,16 +1,10 @@
 package org.master.command.user.commands;
 
-import org.master.command.Command;
-import org.master.dto.user.UpdateUserDTO;
+import java.util.UUID;
 
-public class UpdateUserCommand implements Command {
-    private final UpdateUserDTO userDTO;
+public record UpdateUserCommand(
+        UUID id,
+        String name,
+        String email
+){}
 
-    public UpdateUserCommand(UpdateUserDTO userDTO) {
-        this.userDTO = userDTO;
-    }
-
-    public UpdateUserDTO getUserDTO() {
-        return userDTO;
-    }
-}

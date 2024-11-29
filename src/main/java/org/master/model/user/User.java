@@ -7,55 +7,50 @@ import io.quarkus.security.jpa.Username;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.master.model.BaseEntity;
 
+import java.util.UUID;
+
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "app_user")
 @UserDefinition
 public class User extends BaseEntity {
 
-    @Setter
     @Getter
     @NotBlank
     private String name;
 
-    @Setter
     @Getter
     @NotBlank
     @Email
     private String email;
 
+    @Getter
     @Column(unique = true)
     @Username
     private String login;
 
-    @Setter
     @Password
     private String password;
 
+    @Getter
     @Roles
     public String role;
 
-
-    // Getters and Setters
-
-    public @NotBlank String getLogin() {
-        return login;
-    }
-
-    public void setLogin(@NotBlank String login) {
-        this.login = login;
+    public User(UUID id, String name, String email, String login, String password, String role) {
+        this.setId(id);
+        this.setName(name);
+        this.setEmail(email);
+        this.setLogin(login);
+        this.setPassword(password);
     }
 
 
-    public Object getRoles() {
-        return null;
-    }
-
-    public void setRoles(String role) {
-        this.role = role;
-    }
 }
 

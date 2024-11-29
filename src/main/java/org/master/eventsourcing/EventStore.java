@@ -37,11 +37,6 @@ public class EventStore {
             // Publish the Event
             screenEventPublisher.publish(event);
         }
-        ScreenWriteModel screenWriteModel = new ScreenWriteModel();
-        screenWriteModel.setName(aggregate.getName());
-        screenWriteModel.setData(aggregate.getData());
-
-        em.persist(screenWriteModel);
 
         // Mark changes as committed
         aggregate.markChangesAsCommitted();

@@ -10,7 +10,7 @@ import java.util.UUID;
 public abstract class AggregateRoot {
 
     @Getter
-    private UUID id; // Unique identifier for the aggregate
+    private final UUID id; // Unique identifier for the aggregate
     @Getter
     private int version; // Current version of the aggregate
     private final List<BaseEvent> uncommittedChanges = new ArrayList<>(); // Uncommitted domain events

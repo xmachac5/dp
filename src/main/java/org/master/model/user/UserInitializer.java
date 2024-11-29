@@ -5,26 +5,21 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.master.dto.user.CreateUserDTO;
-import org.master.service.user.UserService;
+import org.master.repository.user.UserRepository;
+
+import java.util.UUID;
 
 @ApplicationScoped
 public class UserInitializer {
 
     @Inject
-    UserService userService;
+    UserRepository userRepository;
 
     @Transactional
     void onStart(@Observes StartupEvent ev){
-        if (!userService.isUserPresent()) {
-            CreateUserDTO firstUserDTO = new CreateUserDTO();
-            firstUserDTO.setName("admin");
-            firstUserDTO.setEmail("admin@example.com");
-            firstUserDTO.setPassword("admin");
-            firstUserDTO.setLogin("admin");
-            firstUserDTO.setRole("admin");
-            userService.createUser(firstUserDTO);
-            System.out.println("First user created.");
+        if (userRepository.count() == 0) {
+            userRepository.persist(new User(UUID.randomUUID(), "admin", "admin@example.com",
+                    "admin", "admin", "admin"));
         }
     }
 }

@@ -21,9 +21,6 @@ public class ScreenEventListener {
     @Inject
     ScreenReadRepository readRepository;
 
-    @Inject
-    EntityManager em;
-
     @ActivateRequestContext
     @Incoming("screen-commands")
     @Transactional
@@ -36,17 +33,10 @@ public class ScreenEventListener {
     }
 
     private void handle(ScreenCreatedEvent event) {
-        ScreenReadModel screenReadModel = new ScreenReadModel();
-        screenReadModel.setId(event.getId());
-        screenReadModel.setName(event.getName());
-        screenReadModel.setData(event.getData());
-        em.persist(screenReadModel); // Update read model
+        readRepository.create(event);
     }
 
     private void handle(ScreenUpdatedEvent event) {
-        ScreenReadModel screenReadModel = em.find(ScreenReadModel.class, event.getId());
-        screenReadModel.setName(event.getName());
-        screenReadModel.setData(event.getData());
-        em.merge(screenReadModel); // Update read model
+        readRepository.update(event);
     }
 }

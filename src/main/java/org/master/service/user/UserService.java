@@ -1,17 +1,13 @@
 package org.master.service.user;
 
-import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.transaction.Transactional;
-import org.master.dto.user.CreateUserDTO;
 import org.master.dto.user.UserListDTO;
 import org.master.model.user.User;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,52 +25,8 @@ public class UserService {
         return count > 0;
     }
 
-    @Transactional
-    public void createUser(CreateUserDTO createUserDTO){
-
-        User newUser = new User();
-        newUser.setName(createUserDTO.getName());
-        newUser.setEmail(createUserDTO.getEmail());
-        newUser.setLogin(createUserDTO.getLogin());
-        newUser.setPassword(BcryptUtil.bcryptHash(createUserDTO.getPassword()));
-        newUser.setRoles(createUserDTO.getRole());
-
-        // Set createdBy to null explicitly for the first user
-        if (!isUserPresent()) {
-            newUser.setCreatedBy(null);
-        }
-
-        em.persist(newUser);
-    }
-
     public User findByUuid(UUID uuid) {
         return em.find(User.class, uuid);
-    }
-
-    @Transactional
-    public void updateUser(UUID uuid, String name, String email) {
-        User user = em.find(User.class, uuid);
-        if (user != null) {
-            user.setName(name);
-            user.setEmail(email);
-            user.setUpdatedAt(LocalDateTime.now());
-            user.setUpdatedBy(getCurrentUser());
-        }
-        em.merge(user);
-    }
-
-    @Transactional
-    public void updatePassword(User user, String newPassword) {
-
-        user.setPassword(BcryptUtil.bcryptHash(newPassword));
-    }
-
-    @Transactional
-    public void deleteUser(UUID uuid) {
-        User user = em.find(User.class, uuid);
-        if (user != null) {
-            em.remove(user);
-        }
     }
 
     public List<UserListDTO> getAllUsers() {
