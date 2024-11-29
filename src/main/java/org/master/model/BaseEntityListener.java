@@ -5,7 +5,6 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import org.master.model.user.User;
 import org.master.service.user.UserService;
-
 import java.time.LocalDateTime;
 
 public class BaseEntityListener {
