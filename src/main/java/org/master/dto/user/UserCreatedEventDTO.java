@@ -1,6 +1,10 @@
 package org.master.dto.user;
 
+import lombok.Getter;
+
+@Getter
 public class UserCreatedEventDTO {
+    // Getters
     private String name;
     private String email;
     private String login;
@@ -11,16 +15,4 @@ public class UserCreatedEventDTO {
         this.login = login;
     }
 
-    // Getters
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getLogin() {
-        return login;
-    }
 }

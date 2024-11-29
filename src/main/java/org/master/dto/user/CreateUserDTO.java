@@ -2,11 +2,18 @@ package org.master.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 
 public class CreateUserDTO {
+    // Getters and setters
+    @Setter
+    @Getter
     @NotBlank
     private String name;
 
+    @Setter
+    @Getter
     @NotBlank
     @Email
     private String email;
@@ -17,28 +24,9 @@ public class CreateUserDTO {
     @NotBlank
     private String password;
 
+    @Setter
+    @Getter
     private String role;
-
-    // Getters and setters
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public @NotBlank String getLogin() {
         return login;
@@ -56,8 +44,5 @@ public class CreateUserDTO {
         this.password = password;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
 }
 

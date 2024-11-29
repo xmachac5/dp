@@ -1,25 +1,19 @@
 package org.master.dto.user;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.UUID;
 
+@Getter
 public class UpdatePasswordDTO {
-    private UUID uuid;
-    private String newPassword;
-
     // Getters and setters
-    public UUID getUuid() {
-        return uuid;
-    }
+    private UUID uuid;
+    @Setter
+    private String newPassword;
 
     public void setUUuid(UUID userId) {
         this.uuid = userId;
     }
 
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
 }
