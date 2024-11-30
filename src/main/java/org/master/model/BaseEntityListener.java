@@ -4,15 +4,14 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import org.master.model.user.User;
-import org.master.service.user.UserService;
-import java.time.LocalDateTime;
+import org.master.repository.user.UserRepository;
 
 public class BaseEntityListener {
 
     @PrePersist
     public void setCreationFields(BaseEntity entity) {
-        UserService userService = CDI.current().select(UserService.class).get();
-        if (userService.isUserPresent()) {
+        UserRepository userRepository = CDI.current().select(UserRepository.class).get();
+        if (userRepository.isUserPresent()) {
             User currentUser = getCurrentUser();
             if (currentUser != null) {
                 entity.setCreatedBy(currentUser);
@@ -30,7 +29,7 @@ public class BaseEntityListener {
     }**/
 
     private User getCurrentUser() {
-        UserService userService = CDI.current().select(UserService.class).get();
-        return userService.getCurrentUser();
+        UserRepository userRepository = CDI.current().select(UserRepository.class).get();
+        return userRepository.getCurrentUser();
     }
 }

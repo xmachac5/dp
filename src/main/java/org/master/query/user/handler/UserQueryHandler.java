@@ -2,6 +2,7 @@ package org.master.query.user.handler;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.master.dto.user.DetailUserDTO;
 import org.master.dto.user.UserListDTO;
 import org.master.model.user.User;
 import org.master.service.user.UserService;
@@ -14,7 +15,7 @@ public class UserQueryHandler {
     @Inject
     UserService userService;
 
-    public User getUserByUuid(UUID uuid) {
+    public DetailUserDTO getUserByUuid(UUID uuid) {
         return userService.findByUuid(uuid);
     }
 
@@ -22,5 +23,5 @@ public class UserQueryHandler {
         return userService.getAllUsers();
     }
 
-    public User getCurrentUser() { return userService.getCurrentUser(); }
+    public DetailUserDTO getCurrentUser() { return userService.getCurrentUser(); }
 }

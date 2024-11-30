@@ -1,5 +1,6 @@
 package org.master.model.user;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
@@ -19,7 +20,7 @@ public class UserInitializer {
     void onStart(@Observes StartupEvent ev){
         if (userRepository.count() == 0) {
             userRepository.persist(new User(UUID.randomUUID(), "admin", "admin@example.com",
-                    "admin", "admin", "admin"));
+                    "admin", BcryptUtil.bcryptHash("admin"), "admin"));
         }
     }
 }

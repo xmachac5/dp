@@ -45,7 +45,7 @@ public class UserCommandResource {
 
     @POST
     @Path("/change-password")
-    @RolesAllowed("admin")
+    //@RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response changePassword(UpdatePasswordDTO updatePasswordDTO) {
         try {

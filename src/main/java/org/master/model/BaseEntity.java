@@ -4,7 +4,6 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 import org.master.model.user.User;
 
 import java.time.LocalDateTime;
@@ -24,7 +23,7 @@ public abstract class BaseEntity extends PanacheEntityBase  {
     private LocalDateTime createdAt;
 
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", updatable = false, referencedColumnName = "id")
     private User createdBy;
 
@@ -33,14 +32,14 @@ public abstract class BaseEntity extends PanacheEntityBase  {
     private LocalDateTime updatedAt;
 
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "updated_by", referencedColumnName = "id")
     private User  updatedBy;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deleted_by", referencedColumnName = "id")
     private User deletedBy;
 

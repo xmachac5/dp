@@ -5,6 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import org.master.dto.user.DetailUserDTO;
 import org.master.dto.user.UserListDTO;
 import org.master.model.user.User;
 
@@ -25,8 +26,19 @@ public class UserService {
         return count > 0;
     }
 
-    public User findByUuid(UUID uuid) {
-        return em.find(User.class, uuid);
+    public DetailUserDTO findByUuid(UUID uuid) {
+        try {
+            return em.createQuery(
+                            "SELECT new org.master.dto.user.DetailUserDTO(u.id, u.name, u.email, u.login," +
+                                    "u.role, u.createdBy.id, u.createdAt, u.updatedBy.id, u.updatedAt, u.deletedBy.id," +
+                                    "u.deletedAt) " +
+                                    "FROM User u LEFT JOIN u.createdBy LEFT JOIN u.updatedBy LEFT JOIN u.createdBy" +
+                                    " WHERE u.id = :uuid", DetailUserDTO.class)
+                    .setParameter("uuid", uuid)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Handle case where no user is found
+        }
     }
 
     public List<UserListDTO> getAllUsers() {
@@ -35,14 +47,18 @@ public class UserService {
                 .getResultList();
     }
 
-    public User getCurrentUser(){
+    public DetailUserDTO getCurrentUser(){
         return findByLogin(securityIdentity.getPrincipal().getName());
     }
 
 
-    public User findByLogin(String login) {
+    public DetailUserDTO findByLogin(String login) {
         try {
-            return em.createQuery("SELECT u FROM User u WHERE u.login = :login", User.class)
+            return em.createQuery("SELECT new org.master.dto.user.DetailUserDTO(u.id, u.name, u.email, u.login," +
+                            "u.role, u.createdBy.id, u.createdAt, u.updatedBy.id, u.updatedAt, u.deletedBy.id," +
+                            "u.deletedAt) " +
+                            "FROM User u LEFT JOIN u.createdBy LEFT JOIN u.updatedBy LEFT JOIN u.createdBy" +
+                            " WHERE u.login = :login", DetailUserDTO.class)
                     .setParameter("login", login)
                     .getSingleResult();
         } catch (NoResultException e) {

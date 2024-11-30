@@ -21,13 +21,10 @@ dependencies {
     implementation 'io.quarkus:quarkus-resteasy-reactive-jackson'
     implementation 'io.quarkus:quarkus-jackson'
     implementation 'io.quarkus:quarkus-hibernate-validator'
-    implementation 'io.quarkus:quarkus-smallrye-jwt'
     implementation 'io.quarkus:quarkus-security'
     implementation 'io.quarkus:quarkus-security-jpa'
     implementation 'io.quarkus:quarkus-vertx-http'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.1'
-    implementation 'io.quarkus:quarkus-elytron-security'
-    implementation 'io.quarkus:quarkus-elytron-security-common'
 
 
     compileOnly 'org.projectlombok:lombok:1.18.36'

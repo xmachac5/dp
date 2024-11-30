@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,8 +17,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ScreenCreateDTO {
 
-    //@Schema(type = SchemaType.OBJECT, description = "JSON data")
     @NotNull
+    @Schema(
+            description = "Main JSON data structure for screen creation",
+            example = "{ \"widget\": \"grid\", \"settings\": { \"object\": \"list\" } }"
+    )
     private JsonNode data;
 
     @NotBlank
@@ -27,30 +31,39 @@ public class ScreenCreateDTO {
     @NotNull
     private Integer columns;
 
-    //@Schema(type = SchemaType.ARRAY, description = "Row heights as a list of integers")
-    @NotBlank
+    @NotNull
     private List<Integer> rowHeights;
 
-    @NotBlank
+    @NotNull
     private UUID primaryLanguageId;
 
     @NotBlank
     private String url;
 
-    //@Schema(type = SchemaType.ARRAY, description = "Row maximum heights as a list of integers")
     private List<Integer> rowMaxHeights;
 
-    //@Schema(type = SchemaType.OBJECT, description = "Localizations JSON data")
+    @Schema(
+            description = "Main JSON data structure for screen creation",
+            example = "{ \"variable\": \"variable_name\", \"variable_type\": \"string\" }"
+    )
     private JsonNode locals;
 
-    //@Schema(type = SchemaType.OBJECT, description = "Variable initial values JSON data")
+    @Schema(
+            description = "Main JSON data structure for screen creation",
+            example = "{ \"variable\": \"variable_name\", \"variable_value\": \"value\" }"
+    )
     private JsonNode variableInit;
 
-    //@Schema(type = SchemaType.OBJECT, description = "Variable initial mapping JSON data")
+    @Schema(
+            description = "Main JSON data structure for screen creation",
+            example = "{ \"variable\": \"variable_name\", \"variable_value\": \"value\" }"
+    )
     private JsonNode variableInitMapping;
 
-    //@Schema(type = SchemaType.OBJECT, description = "Background JSON data")
-    private JsonNode background;
+    @Schema(
+            description = "Main JSON data structure for screen creation",
+            example = "{ \"background_colour\": \"colour\", \"background_opacity\": \"opacity\" }"
+    )    private JsonNode background;
 
     private String title;
 }

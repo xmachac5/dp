@@ -49,6 +49,7 @@ public class User extends BaseEntity {
         this.setEmail(email);
         this.setLogin(login);
         this.setPassword(password);
+        this.setRole(role);
     }
 
 

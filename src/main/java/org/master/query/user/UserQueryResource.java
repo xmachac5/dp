@@ -8,8 +8,8 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.master.dto.user.DetailUserDTO;
 import org.master.dto.user.UserListDTO;
-import org.master.model.user.User;
 import org.master.query.user.handler.UserQueryHandler;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class UserQueryResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserById(@PathParam("id") UUID uuid) {
-        User user = userQueryHandler.getUserByUuid(uuid);
+        DetailUserDTO user = userQueryHandler.getUserByUuid(uuid);
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -36,7 +36,7 @@ public class UserQueryResource {
     @RolesAllowed("admin")
     @Path("/current")
     public Response getCurrentUser() {
-        User user = userQueryHandler.getCurrentUser();
+        DetailUserDTO user = userQueryHandler.getCurrentUser();
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
