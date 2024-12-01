@@ -12,6 +12,7 @@ import java.util.UUID;
 
 @Data
 public class ScreenUpdatedEvent extends BaseEvent {
+    private UUID screenId;
     private JsonNode data;
     private String name;
     private Integer columns;
@@ -29,6 +30,7 @@ public class ScreenUpdatedEvent extends BaseEvent {
     @JsonCreator
     public ScreenUpdatedEvent(
             @JsonProperty(value = "id", required = true) UUID id,
+            @JsonProperty(value = "screenId", required = true) UUID screenId,
             @JsonProperty("name") String name,
             @JsonProperty("data") JsonNode data,
             @JsonProperty("columns") Integer columns,
@@ -43,6 +45,7 @@ public class ScreenUpdatedEvent extends BaseEvent {
             @JsonProperty("title") String title
     ) {
         super(id);
+        this.screenId = screenId;
         this.name = name;
         this.data = data;
         this.columns = columns;

@@ -1,15 +1,11 @@
 package org.master.domain.screen;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.master.command.screen.commands.CreateScreenCommand;
 import org.master.command.screen.commands.UpdateScreenCommand;
 import org.master.domain.AggregateRoot;
-import org.master.dto.screen.ScreenCreateDTO;
 import org.master.events.BaseEvent;
 import org.master.events.screen.ScreenCreatedEvent;
 import org.master.events.screen.ScreenUpdatedEvent;
@@ -62,12 +58,17 @@ public class ScreenAggregate extends AggregateRoot {
         return aggregate;
     }
 
-    public void updateScreen(UpdateScreenCommand updateScreenCommand) {
-        apply(new ScreenUpdatedEvent(updateScreenCommand.id(), updateScreenCommand.name(), updateScreenCommand.data(),
+    public static ScreenAggregate updateScreen(UpdateScreenCommand updateScreenCommand) {
+        UUID id = UUID.randomUUID();
+        ScreenAggregate aggregate = new ScreenAggregate(id);
+        // Creating the ScreenCreatedEvent with all necessary data
+        ScreenUpdatedEvent event = new ScreenUpdatedEvent(id, updateScreenCommand.id(), updateScreenCommand.name(), updateScreenCommand.data(),
                 updateScreenCommand.columns(), updateScreenCommand.rowHeights(), updateScreenCommand.primaryLanguageId(),
                 updateScreenCommand.url(), updateScreenCommand.rowMaxHeights(), updateScreenCommand.locals(),
                 updateScreenCommand.variableInit(), updateScreenCommand.variableInitMapping(), updateScreenCommand.background(),
-                updateScreenCommand.title()));
+                updateScreenCommand.title());
+        aggregate.apply(event);
+        return aggregate;
     }
 
     @Override
@@ -75,22 +76,41 @@ public class ScreenAggregate extends AggregateRoot {
         if (event instanceof ScreenCreatedEvent created) {
             handle(created);
         } else if (event instanceof ScreenUpdatedEvent updated) {
-            //handle(updated);
+            handle(updated);
         }
     }
 
     private void handle(final ScreenCreatedEvent screenCreatedEvent){
-        this.name = screenCreatedEvent.getName();
-        this.data = screenCreatedEvent.getData();
-        this.columns = screenCreatedEvent.getColumns();
-        this.rowHeights = screenCreatedEvent.getRowHeights();
-        this.primaryLanguageId = screenCreatedEvent.getPrimaryLanguageId();
-        this.url = screenCreatedEvent.getUrl();
-        this.rowMaxHeights = screenCreatedEvent.getRowMaxHeights();
-        this.locals = screenCreatedEvent.getLocals();
-        this.variableInit = screenCreatedEvent.getVariableInit();
-        this.variableInitMapping = screenCreatedEvent.getVariableInitMapping();
-        this.background = screenCreatedEvent.getBackground();
-        this.title = screenCreatedEvent.getTitle();
+        setAggregateData(screenCreatedEvent.getName(), screenCreatedEvent.getData(), screenCreatedEvent.getColumns(),
+                screenCreatedEvent.getRowHeights(), screenCreatedEvent.getPrimaryLanguageId(),
+                screenCreatedEvent.getUrl(), screenCreatedEvent.getRowMaxHeights(), screenCreatedEvent.getLocals(),
+                screenCreatedEvent.getVariableInit(), screenCreatedEvent.getVariableInitMapping(),
+                screenCreatedEvent.getBackground(), screenCreatedEvent.getTitle());
+    }
+
+    private void handle(final ScreenUpdatedEvent screenUpdatedEvent){
+        setAggregateData(screenUpdatedEvent.getName(), screenUpdatedEvent.getData(), screenUpdatedEvent.getColumns(),
+                screenUpdatedEvent.getRowHeights(), screenUpdatedEvent.getPrimaryLanguageId(),
+                screenUpdatedEvent.getUrl(), screenUpdatedEvent.getRowMaxHeights(), screenUpdatedEvent.getLocals(),
+                screenUpdatedEvent.getVariableInit(), screenUpdatedEvent.getVariableInitMapping(),
+                screenUpdatedEvent.getBackground(), screenUpdatedEvent.getTitle());
+    }
+
+    private void setAggregateData(String name, JsonNode data, Integer columns, List<Integer> rowHeights,
+                                  UUID primaryLanguageId, String url, List<Integer> rowMaxHeights, JsonNode locals,
+                                  JsonNode variableInit, JsonNode variableInitMapping, JsonNode background,
+                                  String title) {
+        this.name = name;
+        this.data = data;
+        this.columns = columns;
+        this.rowHeights = rowHeights;
+        this.primaryLanguageId = primaryLanguageId;
+        this.url = url;
+        this.rowMaxHeights = rowMaxHeights;
+        this.locals = locals;
+        this.variableInit = variableInit;
+        this.variableInitMapping = variableInitMapping;
+        this.background = background;
+        this.title = title;
     }
 }

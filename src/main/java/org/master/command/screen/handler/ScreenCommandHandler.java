@@ -4,12 +4,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.master.command.screen.commands.CreateScreenCommand;
+import org.master.command.screen.commands.UpdateScreenCommand;
 import org.master.domain.screen.ScreenAggregate;
 import org.master.eventsourcing.EventStore;
-import org.master.model.screen.ScreenWriteModel;
 import org.master.repository.screen.ScreenWriteRepository;
-
-import java.util.UUID;
 
 @ApplicationScoped
 public class ScreenCommandHandler {
@@ -32,5 +30,17 @@ public class ScreenCommandHandler {
 
         screenWriteRepository.create(aggregate.getId(), command);
 
+    }
+
+    @Transactional
+    public void handle(UpdateScreenCommand command) {
+
+        // Use factory method to create a new aggregate
+        ScreenAggregate aggregate = ScreenAggregate.updateScreen(command);
+
+        // Persist and publish events
+        eventStore.saveAndPublish(aggregate);
+
+        screenWriteRepository.update(command);
     }
 }

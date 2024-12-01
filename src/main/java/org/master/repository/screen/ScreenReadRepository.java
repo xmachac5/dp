@@ -33,7 +33,7 @@ public class ScreenReadRepository implements PanacheRepository<ScreenReadModel> 
     }
 
     public void update(ScreenUpdatedEvent screenUpdatedEvent ) {
-        ScreenReadModel screenReadModel = em.find(ScreenReadModel.class, screenUpdatedEvent.getId());
+        ScreenReadModel screenReadModel = em.find(ScreenReadModel.class, screenUpdatedEvent.getScreenId());
         setScreenData(screenReadModel, screenUpdatedEvent.getData(),
                 screenUpdatedEvent.getColumns(), screenUpdatedEvent.getRowHeights(), screenUpdatedEvent.getPrimaryLanguageId(),
                 screenUpdatedEvent.getUrl(), screenUpdatedEvent.getRowMaxHeights(), screenUpdatedEvent.getLocals(),
