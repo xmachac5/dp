@@ -6,6 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import org.master.events.screen.ScreenCreatedEvent;
+import org.master.events.screen.ScreenDeletedEvent;
 import org.master.events.screen.ScreenUpdatedEvent;
 import org.master.model.screen.ScreenReadModel;
 import org.master.repository.language.LanguageRepository;
@@ -33,7 +34,7 @@ public class ScreenReadRepository implements PanacheRepository<ScreenReadModel> 
     }
 
     public void update(ScreenUpdatedEvent screenUpdatedEvent ) {
-        ScreenReadModel screenReadModel = em.find(ScreenReadModel.class, screenUpdatedEvent.getScreenId());
+        ScreenReadModel screenReadModel = em.find(ScreenReadModel.class, screenUpdatedEvent.getId());
         setScreenData(screenReadModel, screenUpdatedEvent.getData(),
                 screenUpdatedEvent.getColumns(), screenUpdatedEvent.getRowHeights(), screenUpdatedEvent.getPrimaryLanguageId(),
                 screenUpdatedEvent.getUrl(), screenUpdatedEvent.getRowMaxHeights(), screenUpdatedEvent.getLocals(),
@@ -41,6 +42,10 @@ public class ScreenReadRepository implements PanacheRepository<ScreenReadModel> 
                 screenUpdatedEvent.getBackground(), screenUpdatedEvent.getTitle());
 
         em.merge(screenReadModel);
+    }
+
+    public void delete(ScreenDeletedEvent screenDeletedEvent) {
+        em.remove(em.find(ScreenReadModel.class, screenDeletedEvent.getId()));
     }
 
     private void setScreenData(ScreenReadModel screenReadModel, JsonNode data, Integer columns,

@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.master.command.screen.commands.CreateScreenCommand;
+import org.master.command.screen.commands.DeleteScreenCommand;
 import org.master.command.screen.commands.UpdateScreenCommand;
 import org.master.domain.AggregateRoot;
 import org.master.events.BaseEvent;
 import org.master.events.screen.ScreenCreatedEvent;
+import org.master.events.screen.ScreenDeletedEvent;
 import org.master.events.screen.ScreenUpdatedEvent;
 
 import java.util.List;
@@ -58,17 +60,20 @@ public class ScreenAggregate extends AggregateRoot {
         return aggregate;
     }
 
-    public static ScreenAggregate updateScreen(UpdateScreenCommand updateScreenCommand) {
-        UUID id = UUID.randomUUID();
-        ScreenAggregate aggregate = new ScreenAggregate(id);
-        // Creating the ScreenCreatedEvent with all necessary data
-        ScreenUpdatedEvent event = new ScreenUpdatedEvent(id, updateScreenCommand.id(), updateScreenCommand.name(), updateScreenCommand.data(),
+    public void updateScreen(UpdateScreenCommand updateScreenCommand) {
+        // Creating the ScreenUpdatedEvent with all necessary data
+        ScreenUpdatedEvent event = new ScreenUpdatedEvent(updateScreenCommand.id(), updateScreenCommand.name(), updateScreenCommand.data(),
                 updateScreenCommand.columns(), updateScreenCommand.rowHeights(), updateScreenCommand.primaryLanguageId(),
                 updateScreenCommand.url(), updateScreenCommand.rowMaxHeights(), updateScreenCommand.locals(),
                 updateScreenCommand.variableInit(), updateScreenCommand.variableInitMapping(), updateScreenCommand.background(),
                 updateScreenCommand.title());
-        aggregate.apply(event);
-        return aggregate;
+        this.apply(event);
+    }
+
+    public void deleteScreen(DeleteScreenCommand deleteScreenCommand) {
+        // Creating the ScreenDeletedEvent with screen id
+        ScreenDeletedEvent event = new ScreenDeletedEvent(deleteScreenCommand.uuid());
+        this.apply(event);
     }
 
     @Override
@@ -77,6 +82,8 @@ public class ScreenAggregate extends AggregateRoot {
             handle(created);
         } else if (event instanceof ScreenUpdatedEvent updated) {
             handle(updated);
+        } else if (event instanceof ScreenDeletedEvent) {
+            handle();
         }
     }
 
@@ -94,6 +101,10 @@ public class ScreenAggregate extends AggregateRoot {
                 screenUpdatedEvent.getUrl(), screenUpdatedEvent.getRowMaxHeights(), screenUpdatedEvent.getLocals(),
                 screenUpdatedEvent.getVariableInit(), screenUpdatedEvent.getVariableInitMapping(),
                 screenUpdatedEvent.getBackground(), screenUpdatedEvent.getTitle());
+    }
+
+    private void handle(){
+        super.markAsDeleted();
     }
 
     private void setAggregateData(String name, JsonNode data, Integer columns, List<Integer> rowHeights,

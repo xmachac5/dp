@@ -38,14 +38,18 @@ public class UserCommandResource {
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateUser(@Valid UpdateUserDTO updateUserDTO) {
-        userCommandHandler.handleUpdateUserCommand(new UpdateUserCommand(updateUserDTO.getUuid(), updateUserDTO.getName(),
-                updateUserDTO.getEmail()));
-        return Response.status(Response.Status.OK).build();
+        try {
+            userCommandHandler.handleUpdateUserCommand(new UpdateUserCommand(updateUserDTO.getUuid(), updateUserDTO.getName(),
+                    updateUserDTO.getEmail()));
+            return Response.status(Response.Status.OK).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
     }
 
     @POST
     @Path("/change-password")
-    //@RolesAllowed("admin")
+    @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response changePassword(UpdatePasswordDTO updatePasswordDTO) {
         try {
@@ -61,7 +65,11 @@ public class UserCommandResource {
     @Path("/{uuid}")
     @RolesAllowed("admin")
     public Response deleteUser(@PathParam("uuid") UUID uuid) {
-        userCommandHandler.handleDeleteUserCommand(new DeleteUserCommand(uuid));
-        return Response.status(Response.Status.NO_CONTENT).build();
+        try {
+            userCommandHandler.handleDeleteUserCommand(new DeleteUserCommand(uuid));
+            return Response.status(Response.Status.NO_CONTENT).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
     }
 }

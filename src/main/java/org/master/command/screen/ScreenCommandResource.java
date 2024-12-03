@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.master.command.screen.commands.CreateScreenCommand;
+import org.master.command.screen.commands.DeleteScreenCommand;
 import org.master.command.screen.commands.UpdateScreenCommand;
 import org.master.command.screen.handler.ScreenCommandHandler;
 import org.master.dto.screen.ScreenCreateDTO;
@@ -36,15 +37,36 @@ public class ScreenCommandResource {
     }
 
     @Operation(summary = "Update new screen", description = "Update screen with the provided data")
-    @POST
+    @PUT
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateScreen(@QueryParam("screen id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id,
                                  @Valid ScreenUpdateDTO screenUpdateDTO){
-        screenCommandHandler.handle(new UpdateScreenCommand(id, screenUpdateDTO.getData(), screenUpdateDTO.getName(),
-                screenUpdateDTO.getColumns(), screenUpdateDTO.getRowHeights(), screenUpdateDTO.getPrimaryLanguageId(),
-                screenUpdateDTO.getUrl(), screenUpdateDTO.getRowMaxHeights(), screenUpdateDTO.getLocals(), screenUpdateDTO.getVariableInit(),
-                screenUpdateDTO.getVariableInitMapping(), screenUpdateDTO.getBackground(), screenUpdateDTO.getTitle()));
-        return Response.status(Response.Status.CREATED).build();
+        try {
+            screenCommandHandler.handle(new UpdateScreenCommand(id, screenUpdateDTO.getData(), screenUpdateDTO.getName(),
+                    screenUpdateDTO.getColumns(), screenUpdateDTO.getRowHeights(), screenUpdateDTO.getPrimaryLanguageId(),
+                    screenUpdateDTO.getUrl(), screenUpdateDTO.getRowMaxHeights(), screenUpdateDTO.getLocals(), screenUpdateDTO.getVariableInit(),
+                    screenUpdateDTO.getVariableInitMapping(), screenUpdateDTO.getBackground(), screenUpdateDTO.getTitle()));
+            return Response.status(Response.Status.OK).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (IllegalStateException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @Operation(summary = "Delete screen", description = "Delete screen with the provided data")
+    @DELETE
+    @RolesAllowed("admin")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteScreen(@QueryParam("screen id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id){
+        try {
+            screenCommandHandler.handle(new DeleteScreenCommand(id));
+            return Response.status(Response.Status.OK).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (IllegalStateException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 }

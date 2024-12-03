@@ -6,6 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import org.master.command.screen.commands.CreateScreenCommand;
+import org.master.command.screen.commands.DeleteScreenCommand;
 import org.master.command.screen.commands.UpdateScreenCommand;
 import org.master.domain.screen.ScreenAggregate;
 import org.master.events.BaseEvent;
@@ -13,8 +14,9 @@ import org.master.events.screen.ScreenEventDeserializer;
 import org.master.model.Event;
 import org.master.model.screen.ScreenWriteModel;
 import org.master.repository.language.LanguageRepository;
-import org.master.service.language.LanguageService;
+import org.master.repository.user.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +33,9 @@ public class ScreenWriteRepository implements PanacheRepository<ScreenWriteModel
     @Inject
     LanguageRepository languageRepository;
 
+    @Inject
+    UserRepository userRepository;
+
     public void create(UUID id, CreateScreenCommand createScreenCommand) {
         ScreenWriteModel screenWriteModel = new ScreenWriteModel();
         screenWriteModel.setId(id);
@@ -45,6 +50,8 @@ public class ScreenWriteRepository implements PanacheRepository<ScreenWriteModel
 
     public void update(UpdateScreenCommand updateScreenCommand ) {
         ScreenWriteModel screenWriteModel = em.find(ScreenWriteModel.class, updateScreenCommand.id());
+        screenWriteModel.setUpdatedAt(LocalDateTime.now());
+        screenWriteModel.setUpdatedBy(userRepository.getCurrentUser());
         setScreenData(screenWriteModel, updateScreenCommand.data(), updateScreenCommand.name(),
                 updateScreenCommand.columns(), updateScreenCommand.rowHeights(),
                 updateScreenCommand.primaryLanguageId(), updateScreenCommand.url(),
@@ -53,6 +60,11 @@ public class ScreenWriteRepository implements PanacheRepository<ScreenWriteModel
                 updateScreenCommand.title());
 
         em.merge(screenWriteModel);
+    }
+
+    public void delete(DeleteScreenCommand deleteScreenCommand) {
+        ScreenWriteModel screenWriteModel = em.find(ScreenWriteModel.class, deleteScreenCommand.uuid());
+        screenWriteModel.setDeleted(userRepository.getCurrentUser(), LocalDateTime.now());
     }
 
     private void setScreenData(ScreenWriteModel screenWriteModel, JsonNode data, String name, Integer columns,
@@ -71,6 +83,10 @@ public class ScreenWriteRepository implements PanacheRepository<ScreenWriteModel
         screenWriteModel.setVariableInitMapping(jsonNode2);
         screenWriteModel.setBackground(background);
         screenWriteModel.setTitle(title);
+    }
+
+    public ScreenWriteModel findByUuid(UUID uuid) {
+        return em.find(ScreenWriteModel.class, uuid);
     }
 
     public ScreenAggregate load(UUID aggregateId) {

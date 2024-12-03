@@ -5,14 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.master.events.BaseEvent;
 
 import java.util.List;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class ScreenUpdatedEvent extends BaseEvent {
-    private UUID screenId;
     private JsonNode data;
     private String name;
     private Integer columns;
@@ -30,7 +31,6 @@ public class ScreenUpdatedEvent extends BaseEvent {
     @JsonCreator
     public ScreenUpdatedEvent(
             @JsonProperty(value = "id", required = true) UUID id,
-            @JsonProperty(value = "screenId", required = true) UUID screenId,
             @JsonProperty("name") String name,
             @JsonProperty("data") JsonNode data,
             @JsonProperty("columns") Integer columns,
@@ -45,7 +45,6 @@ public class ScreenUpdatedEvent extends BaseEvent {
             @JsonProperty("title") String title
     ) {
         super(id);
-        this.screenId = screenId;
         this.name = name;
         this.data = data;
         this.columns = columns;

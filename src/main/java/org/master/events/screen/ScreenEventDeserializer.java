@@ -34,7 +34,7 @@ public class ScreenEventDeserializer implements Deserializer<BaseEvent> {
         try {
             return objectMapper.readValue(data, BaseEvent.class);
         } catch (Exception e) {
-            throw new RuntimeException("Error deserializing ScreenCreatedEvent", e);
+            throw new RuntimeException("Error deserializing " + BaseEvent.class, e);
         }
     }
 

@@ -3,7 +3,6 @@ package org.master.events.screen;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.quarkus.logging.Log;
 import org.apache.kafka.common.serialization.Serializer;
 import org.master.events.BaseEvent;
 
@@ -32,7 +31,7 @@ public class ScreenEventSerializer implements Serializer<BaseEvent> {
         try {
             return objectMapper.writeValueAsBytes(data);
         } catch (Exception e) {
-            throw new RuntimeException("Error serializing ScreenCreatedEvent", e);
+            throw new RuntimeException("Error serializing " + data.getEventType(), e);
         }
     }
 

@@ -10,16 +10,17 @@ import java.util.Objects;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.master.events.screen.ScreenCreatedEvent;
+import org.master.events.screen.ScreenDeletedEvent;
 import org.master.events.screen.ScreenUpdatedEvent;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME, // Use simple names for types
-        include = JsonTypeInfo.As.PROPERTY, // Include the type as a property in the JSON
         property = "type" // Property name for the type
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ScreenCreatedEvent.class, name = "ScreenCreatedEvent"),
-        @JsonSubTypes.Type(value = ScreenUpdatedEvent.class, name = "ScreenUpdateEvent")
+        @JsonSubTypes.Type(value = ScreenUpdatedEvent.class, name = "ScreenUpdateEvent"),
+        @JsonSubTypes.Type(value = ScreenDeletedEvent.class, name = "ScreenDeletedEvent")
 })
 @Data
 @NoArgsConstructor

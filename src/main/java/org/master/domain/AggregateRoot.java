@@ -14,16 +14,28 @@ public abstract class AggregateRoot {
     @Getter
     private int version; // Current version of the aggregate
     private final List<BaseEvent> uncommittedChanges = new ArrayList<>(); // Uncommitted domain events
+    private Boolean deleted = false; // setting deleted
 
     protected AggregateRoot(UUID id) {
         this.id = id;
         this.version = 0;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    protected void markAsDeleted() {
+        this.deleted = true;
+    }
+
     /**
      * Apply an event to this aggregate, mutating its state.
      */
     public void apply(BaseEvent  event) {
+        if (this.deleted){
+            throw new IllegalStateException("Cannot apply events to a deleted aggregate");
+        }
         // Mutate the state
         this.when(event);
 

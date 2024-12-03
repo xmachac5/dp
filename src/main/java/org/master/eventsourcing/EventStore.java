@@ -3,14 +3,17 @@ package org.master.eventsourcing;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.master.domain.screen.ScreenAggregate;
 import org.master.events.BaseEvent;
+import org.master.events.screen.ScreenEventDeserializer;
 import org.master.events.screen.ScreenEventSerializer;
 import org.master.model.Event;
-import org.master.model.screen.ScreenWriteModel;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class EventStore {
@@ -22,6 +25,9 @@ public class EventStore {
 
     @Inject
     ScreenEventSerializer screenEventSerializer;
+
+    @Inject
+    ScreenEventDeserializer screenEventDeserializer;
 
     @Transactional
     public void saveAndPublish(ScreenAggregate aggregate) {
@@ -40,5 +46,23 @@ public class EventStore {
 
         // Mark changes as committed
         aggregate.markChangesAsCommitted();
+    }
+
+    // Method to load events for a given aggregate ID
+    public List<BaseEvent> loadEventsForAggregate(UUID aggregateId) {
+        // Query the Event table to get all events for the specified aggregate ID
+        TypedQuery<Event> query = em.createQuery(
+                "SELECT e FROM Event e WHERE e.aggregateId = :aggregateId ORDER BY e.version ASC",
+                Event.class
+        );
+        query.setParameter("aggregateId", aggregateId);
+
+        // Execute the query and get the result list
+        List<Event> eventEntities = query.getResultList();
+
+        // Deserialize each event from JSON to BaseEvent
+        return eventEntities.stream()
+                .map(eventEntity -> screenEventDeserializer.deserialize(eventEntity.getPayload()))
+                .collect(Collectors.toList());
     }
 }
