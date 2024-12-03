@@ -10,7 +10,7 @@ import org.master.command.screen.commands.DeleteScreenCommand;
 import org.master.command.screen.commands.UpdateScreenCommand;
 import org.master.domain.screen.ScreenAggregate;
 import org.master.events.BaseEvent;
-import org.master.events.screen.ScreenEventDeserializer;
+import org.master.events.EventDeserializer;
 import org.master.model.Event;
 import org.master.model.screen.ScreenWriteModel;
 import org.master.repository.language.LanguageRepository;
@@ -28,7 +28,7 @@ public class ScreenWriteRepository implements PanacheRepository<ScreenWriteModel
     EntityManager em;
 
     @Inject
-    ScreenEventDeserializer screenEventDeserializer;
+    EventDeserializer eventDeserializer;
 
     @Inject
     LanguageRepository languageRepository;
@@ -103,7 +103,7 @@ public class ScreenWriteRepository implements PanacheRepository<ScreenWriteModel
         ScreenAggregate aggregate = new ScreenAggregate(aggregateId);
         for (Event storedEvent : storedEvents) {
             // Deserialize payload into a BaseEvent or its subclass
-            BaseEvent event = screenEventDeserializer.deserialize(storedEvent.getPayload());
+            BaseEvent event = eventDeserializer.deserialize(storedEvent.getPayload());
             aggregate.apply(event); // Apply the event to rebuild state
         }
         return aggregate;

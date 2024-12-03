@@ -6,9 +6,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.master.domain.screen.ScreenAggregate;
+import org.master.domain.script.ScriptAggregate;
 import org.master.events.BaseEvent;
-import org.master.events.screen.ScreenEventDeserializer;
-import org.master.events.screen.ScreenEventSerializer;
+import org.master.events.EventDeserializer;
+import org.master.events.EventSerializer;
 import org.master.model.Event;
 
 import java.util.List;
@@ -23,18 +24,20 @@ public class EventStore {
 
     @Inject ScreenEventPublisher screenEventPublisher;
 
-    @Inject
-    ScreenEventSerializer screenEventSerializer;
+    @Inject ScriptEventPublisher scriptEventPublisher;
 
     @Inject
-    ScreenEventDeserializer screenEventDeserializer;
+    EventSerializer eventSerializer;
+
+    @Inject
+    EventDeserializer eventDeserializer;
 
     @Transactional
     public void saveAndPublish(ScreenAggregate aggregate) {
         List<BaseEvent> events = aggregate.getUncommittedChanges();
         for (BaseEvent event : events) {
             // Serialize the BaseEvent to JSON
-            String payload = screenEventSerializer.serialize(event);
+            String payload = eventSerializer.serialize(event);
 
             // Persist the Event
             Event persistentEvent = new Event(event, payload, aggregate.getVersion());
@@ -42,6 +45,25 @@ public class EventStore {
 
             // Publish the Event
             screenEventPublisher.publish(event);
+        }
+
+        // Mark changes as committed
+        aggregate.markChangesAsCommitted();
+    }
+
+    @Transactional
+    public void saveAndPublish(ScriptAggregate aggregate) {
+        List<BaseEvent> events = aggregate.getUncommittedChanges();
+        for (BaseEvent event : events) {
+            // Serialize the BaseEvent to JSON
+            String payload = eventSerializer.serialize(event);
+
+            // Persist the Event
+            Event persistentEvent = new Event(event, payload, aggregate.getVersion());
+            em.persist(persistentEvent);
+
+            // Publish the Event
+            scriptEventPublisher.publish(event);
         }
 
         // Mark changes as committed
@@ -62,7 +84,7 @@ public class EventStore {
 
         // Deserialize each event from JSON to BaseEvent
         return eventEntities.stream()
-                .map(eventEntity -> screenEventDeserializer.deserialize(eventEntity.getPayload()))
+                .map(eventEntity -> eventDeserializer.deserialize(eventEntity.getPayload()))
                 .collect(Collectors.toList());
     }
 }

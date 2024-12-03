@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
-public class ScreenQUeryHandler {
+public class ScreenQueryHandler {
 
     @Inject
     ScreenService screenService;

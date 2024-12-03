@@ -43,25 +43,25 @@ public class ScreenCreateDTO {
     private List<Integer> rowMaxHeights;
 
     @Schema(
-            description = "Main JSON data structure for screen creation",
+            description = "JSON of local variables for screen creation",
             example = "{ \"variable\": \"variable_name\", \"variable_type\": \"string\" }"
     )
     private JsonNode locals;
 
     @Schema(
-            description = "Main JSON data structure for screen creation",
+            description = "JSON of variables initialization for screen creation",
             example = "{ \"variable\": \"variable_name\", \"variable_value\": \"value\" }"
     )
     private JsonNode variableInit;
 
     @Schema(
-            description = "Main JSON data structure for screen creation",
+            description = "JSON of variables initialization mapping for screen creation",
             example = "{ \"variable\": \"variable_name\", \"variable_value\": \"value\" }"
     )
     private JsonNode variableInitMapping;
 
     @Schema(
-            description = "Main JSON data structure for screen creation",
+            description = "JSON of visual background setting structure for screen creation",
             example = "{ \"background_colour\": \"colour\", \"background_opacity\": \"opacity\" }"
     )    private JsonNode background;
 

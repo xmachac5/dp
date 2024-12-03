@@ -7,7 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.master.dto.screen.ScreenListDTO;
 import org.master.model.screen.ScreenReadModel;
-import org.master.query.screen.handler.ScreenQUeryHandler;
+import org.master.query.screen.handler.ScreenQueryHandler;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class ScreenQueryResource {
 
     @Inject
-    ScreenQUeryHandler screenQUeryHandler;
+    ScreenQueryHandler screenQUeryHandler;
 
     @GET
     @Path("/{id}")

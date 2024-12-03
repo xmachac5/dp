@@ -1,21 +1,20 @@
-package org.master.events.screen;
+package org.master.events;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.kafka.common.serialization.Serializer;
-import org.master.events.BaseEvent;
 
 import jakarta.inject.Singleton;
 
 import java.util.Map;
 
 @Singleton
-public class ScreenEventSerializer implements Serializer<BaseEvent> {
+public class EventSerializer implements Serializer<BaseEvent> {
 
     private final ObjectMapper objectMapper;
 
-    public ScreenEventSerializer() {
+    public EventSerializer() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
         this.objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
