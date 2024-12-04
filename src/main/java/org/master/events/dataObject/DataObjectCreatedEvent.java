@@ -1,0 +1,43 @@
+package org.master.events.dataObject;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.master.events.BaseEvent;
+
+import java.util.List;
+import java.util.UUID;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class DataObjectCreatedEvent extends BaseEvent {
+    private String name;
+    private String description;
+    private Boolean trackChanges;
+    private Boolean softDelete;
+    private JsonNode columns;
+
+    @Builder
+    @JsonCreator
+    public DataObjectCreatedEvent(
+            @JsonProperty(value = "id", required = true) UUID id,
+            @JsonProperty("name") String name,
+            @JsonProperty("description") String description,
+            @JsonProperty("trackChanges") Boolean trackChanges,
+            @JsonProperty("softDelete") Boolean softDelete,
+            @JsonProperty("columns") JsonNode columns
+    ) {
+        super(id);
+        this.name = name;
+        this.columns = columns;
+        this.description = description;
+        this.trackChanges = trackChanges;
+        this.softDelete = softDelete;
+    }
+}

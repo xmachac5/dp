@@ -28,15 +28,15 @@ public class ScreenWriteModel extends BaseEntity {
     private JsonNode data;
     private String name;
     private Integer columns;
-    @Column(columnDefinition = "json")
-    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "integer[]")
+    @JdbcTypeCode(SqlTypes.ARRAY)
     private List<Integer> rowHeights;
     @ManyToOne
     @JoinColumn(name = "primaryLanguage", referencedColumnName = "id")
     private Language primaryLanguage;
     private String url;
-    @Column(columnDefinition = "json")
-    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "integer[]")
+    @JdbcTypeCode(SqlTypes.ARRAY)
     private List<Integer> rowMaxHeights;
     @Column(columnDefinition = "json")
     @JdbcTypeCode(SqlTypes.JSON)

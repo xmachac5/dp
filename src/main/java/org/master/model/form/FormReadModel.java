@@ -1,7 +1,6 @@
-package org.master.model.screen;
+package org.master.model.form;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,15 +16,17 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "screens_read_model")
-public class ScreenReadModel{
-
+@Table(name = "forms_definitions_write_model")
+public class FormReadModel {
     @Id
     @Column(updatable = false, nullable = false, columnDefinition = "UUID")
     private UUID id ;
     @Column(columnDefinition = "json")
     @JdbcTypeCode(SqlTypes.JSON)
-    private JsonNode data;
+    private JsonNode definitions;
+    @Column(columnDefinition = "json")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private JsonNode columnMapping;
     private Integer columns;
     @Column(columnDefinition = "integer[]")
     @JdbcTypeCode(SqlTypes.ARRAY)
@@ -33,22 +34,7 @@ public class ScreenReadModel{
     @ManyToOne
     @JoinColumn(name = "primaryLanguage", referencedColumnName = "id")
     private Language primaryLanguage;
-    private String url;
     @Column(columnDefinition = "integer[]")
     @JdbcTypeCode(SqlTypes.ARRAY)
     private List<Integer> rowMaxHeights;
-    @Column(columnDefinition = "json")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private JsonNode locals;
-    @Column(columnDefinition = "json")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private JsonNode variableInit = JsonNodeFactory.instance.objectNode();
-    @Column(columnDefinition = "json")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private JsonNode variableInitMapping = JsonNodeFactory.instance.objectNode();
-    @Column(columnDefinition = "json")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private JsonNode background;
-    private String title;
-
 }
