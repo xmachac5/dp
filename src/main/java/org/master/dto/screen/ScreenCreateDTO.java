@@ -20,8 +20,10 @@ public class ScreenCreateDTO {
     @NotNull
     @Schema(
             description = "Main JSON data structure for screen creation",
-            example = "{ \"widget\": \"grid\", \"settings\": { \"object\": \"list\" } }"
-    )
+            example = "{\"widgets\": [" +
+                    " {\"type\": \"grid\", \"settings\": { \"object\": \"list\" }}," +
+                    " {\"type\": \"header\", \"expression\": \"name\" } " +
+                    "]}")
     private JsonNode data;
 
     @NotBlank
@@ -44,19 +46,28 @@ public class ScreenCreateDTO {
 
     @Schema(
             description = "JSON of local variables for screen creation",
-            example = "{ \"variable\": \"variable_name\", \"variable_type\": \"string\" }"
+            example = "{ \"variables\": [ " +
+                    "{\"name\": \"variable_1\", \"data_type\": \"Integer\", \"type\": \"input\"}," +
+                    "{\"name\": \"variable_2\", \"data_type\": \"String\", \"type\": \"local\"}" +
+                    "]}"
     )
     private JsonNode locals;
 
     @Schema(
             description = "JSON of variables initialization for screen creation",
-            example = "{ \"variable\": \"variable_name\", \"variable_value\": \"value\" }"
+            example = "{ \"variables\": [ " +
+                    "{\"name\": \"variable_1\", \"table_name\": \"null\", \"where\": \"null\"}," +
+                    "{\"name\": \"variable_2\", \"table_name\": \"cars\", \"where\": \"id = variable_1\"}" +
+                    "]}"
     )
     private JsonNode variableInit;
 
     @Schema(
             description = "JSON of variables initialization mapping for screen creation",
-            example = "{ \"variable\": \"variable_name\", \"variable_value\": \"value\" }"
+            example = "{ \"variables\": [ " +
+                    "{\"name\": \"variable_1\", \"expression\": \"if variable_1 == null, 0, variable_1\"}," +
+                    "{\"name\": \"variable_2\", \"expression\": \"null\"}" +
+                    "]}"
     )
     private JsonNode variableInitMapping;
 

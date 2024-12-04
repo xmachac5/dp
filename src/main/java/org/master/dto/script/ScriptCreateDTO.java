@@ -16,7 +16,10 @@ public class ScriptCreateDTO {
     @NotNull
     @Schema(
             description = "JSON variables structure for script creation",
-            example = "{ \"name\": \"input_variable\", \"data_type\": \"String\", \"type\": \"input\" }"
+            example = "{ \"variables\": [ " +
+                    "  {\"name\": \"input_variable\", \"data_type\": \"String\", \"type\": \"input\"}," +
+                    "  {\"name\": \"output_variable\", \"data_type\": \"Integer\", \"type\": \"output\"}" +
+                    "] }"
     )
     private JsonNode variables;
 
