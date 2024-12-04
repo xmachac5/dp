@@ -33,6 +33,8 @@ public class ScriptWriteRepository {
 
     public void update(UpdateScriptCommand updateScriptCommand ) {
         ScriptWriteModel scriptWriteModel = em.find(ScriptWriteModel.class, updateScriptCommand.id());
+        scriptWriteModel.setUpdatedAt(LocalDateTime.now());
+        scriptWriteModel.setUpdatedBy(userRepository.getCurrentUser());
         scriptWriteModel.setVariables(updateScriptCommand.variables());
         scriptWriteModel.setName(updateScriptCommand.name());
         scriptWriteModel.setCode(updateScriptCommand.code());

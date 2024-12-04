@@ -1,5 +1,6 @@
 package org.master.repository.script;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -18,14 +19,13 @@ public class ScriptReadRepository implements PanacheRepository<ScreenReadModel> 
     public void create(ScriptCreatedEvent scriptCreatedEvent) {
         ScriptReadModel scriptReadModel = new ScriptReadModel();
         scriptReadModel.setId(scriptCreatedEvent.getId());
-        scriptReadModel.setStructure(scriptCreatedEvent.getVariables());
-
+        scriptReadModel.setStructure(((ObjectNode)scriptCreatedEvent.getVariables()).put("code", scriptCreatedEvent.getCode()));
         em.persist(scriptReadModel);
     }
 
     public void update(ScriptUpdatedEvent scriptUpdatedEvent ) {
         ScriptReadModel scriptReadModel = em.find(ScriptReadModel.class, scriptUpdatedEvent.getId());
-        scriptReadModel.setStructure(scriptUpdatedEvent.getVariables());
+        scriptReadModel.setStructure(((ObjectNode)scriptUpdatedEvent.getVariables()).put("code", scriptUpdatedEvent.getCode()));
 
         em.merge(scriptReadModel);
     }

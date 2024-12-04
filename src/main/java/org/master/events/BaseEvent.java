@@ -12,6 +12,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.master.events.screen.ScreenCreatedEvent;
 import org.master.events.screen.ScreenDeletedEvent;
 import org.master.events.screen.ScreenUpdatedEvent;
+import org.master.events.script.ScriptCreatedEvent;
+import org.master.events.script.ScriptDeletedEvent;
+import org.master.events.script.ScriptUpdatedEvent;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME, // Use simple names for types
@@ -20,7 +23,10 @@ import org.master.events.screen.ScreenUpdatedEvent;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ScreenCreatedEvent.class, name = "ScreenCreatedEvent"),
         @JsonSubTypes.Type(value = ScreenUpdatedEvent.class, name = "ScreenUpdateEvent"),
-        @JsonSubTypes.Type(value = ScreenDeletedEvent.class, name = "ScreenDeletedEvent")
+        @JsonSubTypes.Type(value = ScreenDeletedEvent.class, name = "ScreenDeletedEvent"),
+        @JsonSubTypes.Type(value = ScriptCreatedEvent.class, name = "ScriptCreatedEvent"),
+        @JsonSubTypes.Type(value = ScriptUpdatedEvent.class, name = "ScriptUpdatedEvent"),
+        @JsonSubTypes.Type(value = ScriptDeletedEvent.class, name = "ScriptDeletedEvent")
 })
 @Data
 @NoArgsConstructor
