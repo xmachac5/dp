@@ -7,10 +7,9 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.master.events.BaseEvent;
 
 @ApplicationScoped
-public class ScreenEventPublisher implements EventPublisher {
-
+public class DataObjectEventPublisher implements EventPublisher {
     @Inject
-    @Channel("screens")
+    @Channel("data_objects")
     Emitter<BaseEvent> eventEmitter;
 
     @Override

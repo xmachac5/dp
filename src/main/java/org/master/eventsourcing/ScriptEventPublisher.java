@@ -7,11 +7,12 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.master.events.BaseEvent;
 
 @ApplicationScoped
-public class ScriptEventPublisher {
+public class ScriptEventPublisher implements EventPublisher{
     @Inject
     @Channel("scripts")
     Emitter<BaseEvent> eventEmitter;
 
+    @Override
     public void publish(BaseEvent event) {
         eventEmitter.send(event).toCompletableFuture().join();
     }

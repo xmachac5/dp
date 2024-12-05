@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+import org.master.domain.AggregateRoot;
 import org.master.domain.screen.ScreenAggregate;
 import org.master.domain.script.ScriptAggregate;
 import org.master.events.BaseEvent;
@@ -34,25 +35,16 @@ public class EventStore {
 
     @Transactional
     public void saveAndPublish(ScreenAggregate aggregate) {
-        List<BaseEvent> events = aggregate.getUncommittedChanges();
-        for (BaseEvent event : events) {
-            // Serialize the BaseEvent to JSON
-            String payload = eventSerializer.serialize(event);
-
-            // Persist the Event
-            Event persistentEvent = new Event(event, payload, aggregate.getVersion());
-            em.persist(persistentEvent);
-
-            // Publish the Event
-            screenEventPublisher.publish(event);
-        }
-
-        // Mark changes as committed
-        aggregate.markChangesAsCommitted();
+        saveAndPublish(aggregate, screenEventPublisher);
     }
 
     @Transactional
     public void saveAndPublish(ScriptAggregate aggregate) {
+        saveAndPublish(aggregate, scriptEventPublisher);
+    }
+
+    @Transactional
+    public void saveAndPublish(AggregateRoot aggregate, EventPublisher eventPublisher) {
         List<BaseEvent> events = aggregate.getUncommittedChanges();
         for (BaseEvent event : events) {
             // Serialize the BaseEvent to JSON
@@ -63,7 +55,7 @@ public class EventStore {
             em.persist(persistentEvent);
 
             // Publish the Event
-            scriptEventPublisher.publish(event);
+            eventPublisher.publish(event);
         }
 
         // Mark changes as committed
