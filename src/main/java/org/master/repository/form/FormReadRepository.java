@@ -5,11 +5,10 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import org.master.events.screen.ScreenCreatedEvent;
-import org.master.events.screen.ScreenDeletedEvent;
-import org.master.events.screen.ScreenUpdatedEvent;
+import org.master.events.form.FormCreatedEvent;
+import org.master.events.form.FormDeletedEvent;
+import org.master.events.form.FormUpdatedEvent;
 import org.master.model.form.FormReadModel;
-import org.master.model.screen.ScreenReadModel;
 import org.master.repository.language.LanguageRepository;
 
 import java.util.List;
@@ -23,46 +22,37 @@ public class FormReadRepository implements PanacheRepository<FormReadModel> {
     @Inject
     LanguageRepository languageRepository;
 
-    public void create(ScreenCreatedEvent screenCreatedEvent) {
-        ScreenReadModel screenReadModel = new ScreenReadModel();
-        screenReadModel.setId(screenCreatedEvent.getId());
-        setScreenData(screenReadModel, screenCreatedEvent.getData(), screenCreatedEvent.getColumns(),
-                screenCreatedEvent.getRowHeights(), screenCreatedEvent.getPrimaryLanguageId(), screenCreatedEvent.getUrl(),
-                screenCreatedEvent.getRowMaxHeights(), screenCreatedEvent.getLocals(), screenCreatedEvent.getVariableInit(),
-                screenCreatedEvent.getVariableInitMapping(), screenCreatedEvent.getBackground(), screenCreatedEvent.getTitle());
+    public void create(FormCreatedEvent formCreatedEvent) {
+        FormReadModel formReadModel = new FormReadModel();
+        formReadModel.setId(formCreatedEvent.getId());
+        setFormData(formReadModel, formCreatedEvent.getDefinition(), formCreatedEvent.getColumns(),
+                formCreatedEvent.getRowHeights(), formCreatedEvent.getPrimaryLanguageId(), formCreatedEvent.getRowMaxHeights(),
+                formCreatedEvent.getColumnMapping());
 
-        em.persist(screenReadModel);
+        em.persist(formReadModel);
     }
 
-    public void update(ScreenUpdatedEvent screenUpdatedEvent ) {
-        ScreenReadModel screenReadModel = em.find(ScreenReadModel.class, screenUpdatedEvent.getId());
-        setScreenData(screenReadModel, screenUpdatedEvent.getData(),
-                screenUpdatedEvent.getColumns(), screenUpdatedEvent.getRowHeights(), screenUpdatedEvent.getPrimaryLanguageId(),
-                screenUpdatedEvent.getUrl(), screenUpdatedEvent.getRowMaxHeights(), screenUpdatedEvent.getLocals(),
-                screenUpdatedEvent.getVariableInit(), screenUpdatedEvent.getVariableInitMapping(),
-                screenUpdatedEvent.getBackground(), screenUpdatedEvent.getTitle());
+    public void update(FormUpdatedEvent formUpdatedEvent ) {
+        FormReadModel formReadModel = em.find(FormReadModel.class, formUpdatedEvent.getId());
+        setFormData(formReadModel, formUpdatedEvent.getDefinition(), formUpdatedEvent.getColumns(),
+                formUpdatedEvent.getRowHeights(), formUpdatedEvent.getPrimaryLanguageId(), formUpdatedEvent.getRowMaxHeights(),
+                formUpdatedEvent.getColumnMapping());
 
-        em.merge(screenReadModel);
+        em.merge(formReadModel);
     }
 
-    public void delete(ScreenDeletedEvent screenDeletedEvent) {
-        em.remove(em.find(ScreenReadModel.class, screenDeletedEvent.getId()));
+    public void delete(FormDeletedEvent formDeletedEvent) {
+        em.remove(em.find(FormReadModel.class, formDeletedEvent.getId()));
     }
 
-    private void setScreenData(ScreenReadModel screenReadModel, JsonNode data, Integer columns,
-                               List<Integer> integers, UUID uuid, String url, List<Integer> integers2,
-                               JsonNode locals, JsonNode jsonNode, JsonNode jsonNode2, JsonNode background,
-                               String title) {
-        screenReadModel.setData(data);
-        screenReadModel.setColumns(columns);
-        screenReadModel.setRowHeights(integers);
-        screenReadModel.setPrimaryLanguage(languageRepository.findByUuid(uuid));
-        screenReadModel.setUrl(url);
-        screenReadModel.setRowMaxHeights(integers2);
-        screenReadModel.setLocals(locals);
-        screenReadModel.setVariableInit(jsonNode);
-        screenReadModel.setVariableInitMapping(jsonNode2);
-        screenReadModel.setBackground(background);
-        screenReadModel.setTitle(title);
+    private void setFormData(FormReadModel formReadModel, JsonNode definition, Integer columns,
+                               List<Integer> rowHeights, UUID languageUuid, List<Integer> rowMaxHeights,
+                               JsonNode columnMapping) {
+        formReadModel.setDefinitions(definition);
+        formReadModel.setColumns(columns);
+        formReadModel.setRowHeights(rowHeights);
+        formReadModel.setPrimaryLanguage(languageRepository.findByUuid(languageUuid));
+        formReadModel.setRowMaxHeights(rowMaxHeights);
+        formReadModel.setColumnMapping(columnMapping);
     }
 }

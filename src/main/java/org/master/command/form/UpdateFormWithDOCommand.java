@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
-public record UpdateFormCommand (
+public record UpdateFormWithDOCommand(
         @NotNull
         UUID id,
         @NotNull Integer columns,
@@ -14,5 +14,7 @@ public record UpdateFormCommand (
         @NotNull UUID primaryLanguageId,
         List<Integer> rowMaxHeights,
         JsonNode columnMapping,
-        @NotNull JsonNode definition
-){}
+        @NotNull JsonNode definition,
+        Boolean trackChanges,
+        Boolean softDelete
+) {}

@@ -49,18 +49,18 @@ public class ScreenReadRepository implements PanacheRepository<ScreenReadModel> 
     }
 
     private void setScreenData(ScreenReadModel screenReadModel, JsonNode data, Integer columns,
-                               List<Integer> integers, UUID uuid, String url, List<Integer> integers2,
-                               JsonNode locals, JsonNode jsonNode, JsonNode jsonNode2, JsonNode background,
+                               List<Integer> rowHeights, UUID languageUuid, String url, List<Integer> rowMaxHeights,
+                               JsonNode locals, JsonNode variableInit, JsonNode variableInitMapping, JsonNode background,
                                String title) {
         screenReadModel.setData(data);
         screenReadModel.setColumns(columns);
-        screenReadModel.setRowHeights(integers);
-        screenReadModel.setPrimaryLanguage(languageRepository.findByUuid(uuid));
+        screenReadModel.setRowHeights(rowHeights);
+        screenReadModel.setPrimaryLanguage(languageRepository.findByUuid(languageUuid));
         screenReadModel.setUrl(url);
-        screenReadModel.setRowMaxHeights(integers2);
+        screenReadModel.setRowMaxHeights(rowMaxHeights);
         screenReadModel.setLocals(locals);
-        screenReadModel.setVariableInit(jsonNode);
-        screenReadModel.setVariableInitMapping(jsonNode2);
+        screenReadModel.setVariableInit(variableInit);
+        screenReadModel.setVariableInitMapping(variableInitMapping);
         screenReadModel.setBackground(background);
         screenReadModel.setTitle(title);
     }
