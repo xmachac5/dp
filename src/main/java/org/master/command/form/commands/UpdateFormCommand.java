@@ -1,4 +1,4 @@
-package org.master.command.form;
+package org.master.command.form.commands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.constraints.NotNull;

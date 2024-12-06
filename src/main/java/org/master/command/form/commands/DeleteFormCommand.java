@@ -1,4 +1,4 @@
-package org.master.command.form;
+package org.master.command.form.commands;
 
 import jakarta.validation.constraints.NotNull;
 

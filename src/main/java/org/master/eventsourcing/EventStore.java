@@ -6,6 +6,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.master.domain.AggregateRoot;
+import org.master.domain.dataObject.DataObjectAggregate;
+import org.master.domain.form.FormAggregate;
 import org.master.domain.screen.ScreenAggregate;
 import org.master.domain.script.ScriptAggregate;
 import org.master.events.BaseEvent;
@@ -23,9 +25,17 @@ public class EventStore {
     @Inject
     EntityManager em;
 
-    @Inject ScreenEventPublisher screenEventPublisher;
+    @Inject
+    ScreenEventPublisher screenEventPublisher;
 
-    @Inject ScriptEventPublisher scriptEventPublisher;
+    @Inject
+    ScriptEventPublisher scriptEventPublisher;
+
+    @Inject
+    FormEventPublisher formEventPublisher;
+
+    @Inject
+    DataObjectEventPublisher dataObjectEventPublisher;
 
     @Inject
     EventSerializer eventSerializer;
@@ -42,6 +52,18 @@ public class EventStore {
     public void saveAndPublish(ScriptAggregate aggregate) {
         saveAndPublish(aggregate, scriptEventPublisher);
     }
+
+    @Transactional
+    public void saveAndPublish(FormAggregate aggregate) {
+        saveAndPublish(aggregate, formEventPublisher);
+    }
+
+
+    @Transactional
+    public void saveAndPublish(DataObjectAggregate aggregate) {
+        saveAndPublish(aggregate, dataObjectEventPublisher);
+    }
+
 
     @Transactional
     public void saveAndPublish(AggregateRoot aggregate, EventPublisher eventPublisher) {

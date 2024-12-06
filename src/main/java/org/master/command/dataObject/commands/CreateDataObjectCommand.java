@@ -1,4 +1,4 @@
-package org.master.command.dataObject;
+package org.master.command.dataObject.commands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.constraints.NotBlank;

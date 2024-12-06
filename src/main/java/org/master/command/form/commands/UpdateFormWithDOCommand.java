@@ -1,15 +1,14 @@
-package org.master.command.form;
+package org.master.command.form.commands;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 import java.util.List;
 import java.util.UUID;
 
-public record CreateFormWithDOCommand(
-        @NotBlank @Size(min = 5, max = 100) String name,
+public record UpdateFormWithDOCommand(
+        @NotNull
+        UUID id,
         @NotNull Integer columns,
         @NotNull List<Integer> rowHeights,
         @NotNull UUID primaryLanguageId,

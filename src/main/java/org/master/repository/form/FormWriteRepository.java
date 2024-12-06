@@ -5,9 +5,9 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import org.master.command.form.CreateFormCommand;
-import org.master.command.form.DeleteFormCommand;
-import org.master.command.form.UpdateFormCommand;
+import org.master.command.form.commands.CreateFormCommand;
+import org.master.command.form.commands.DeleteFormCommand;
+import org.master.command.form.commands.UpdateFormCommand;
 import org.master.model.form.FormVersionWriteModel;
 import org.master.model.form.FormWriteModel;
 import org.master.repository.language.LanguageRepository;
@@ -73,5 +73,9 @@ public class FormWriteRepository implements PanacheRepository<FormWriteModel> {
         formVersionWriteModel.setFormWriteModel(formWriteModel);
         formVersionWriteModel.setVersion(version);
         return formVersionWriteModel;
+    }
+
+    public FormWriteModel findByUuid(UUID uuid) {
+        return em.find(FormWriteModel.class, uuid);
     }
 }
