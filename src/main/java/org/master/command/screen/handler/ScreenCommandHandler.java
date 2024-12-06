@@ -9,9 +9,9 @@ import org.master.command.screen.commands.UpdateScreenCommand;
 import org.master.domain.screen.ScreenAggregate;
 import org.master.events.BaseEvent;
 import org.master.eventsourcing.EventStore;
-import org.master.model.screen.ScreenWriteModel;
 import org.master.repository.screen.ScreenWriteRepository;
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class ScreenCommandHandler {
@@ -38,69 +38,49 @@ public class ScreenCommandHandler {
 
     @Transactional
     public void handle(UpdateScreenCommand command) {
-        ScreenWriteModel screenWriteModel = screenWriteRepository.findByUuid(command.id());
 
-        if(screenWriteModel != null) {
-            // Load existing aggregate by rehydrating it from event store
-            List< BaseEvent > eventStream = eventStore.loadEventsForAggregate(command.id());
+        ScreenAggregate aggregate = rehydrate(command.id(), "Cannot update deleted Screen");
 
-            if (eventStream.isEmpty()) {
-                throw new IllegalArgumentException("Screen not found with ID: " + command.id());
-            }
+        // Apply the update command
+        aggregate.updateScreen(command);
 
-            // Create the aggregate and rehydrate it
-            ScreenAggregate aggregate = new ScreenAggregate(command.id());
-            aggregate.rehydrate(eventStream);
+        // Persist and publish events
+        eventStore.saveAndPublish(aggregate);
 
-            if (aggregate.isDeleted()) {
-                throw new IllegalStateException("Cannot update a deleted screen");
-            }
-
-            // Apply the update command
-            aggregate.updateScreen(command);
-
-            // Persist and publish events
-            eventStore.saveAndPublish(aggregate);
-
-            // Update the write model in the repository
-            screenWriteRepository.update(command);
-
-        }else {
-            throw new IllegalArgumentException("Screen not found with ID: " + command.id());
-        }
+        // Update the write model in the repository
+        screenWriteRepository.update(command);
     }
 
     @Transactional
     public void handle(DeleteScreenCommand command) {
-        ScreenWriteModel screenWriteModel = screenWriteRepository.findByUuid(command.uuid());
 
-        if(screenWriteModel != null) {
-            // Load existing aggregate by rehydrating it from event store
-            List< BaseEvent > eventStream = eventStore.loadEventsForAggregate(command.uuid());
+        ScreenAggregate aggregate = rehydrate(command.uuid(), "Cannot delete deleted Screen");
 
-            if (eventStream.isEmpty()) {
-                throw new IllegalArgumentException("Screen not found with ID: " + command.uuid());
-            }
+        // Apply the update command
+        aggregate.deleteScreen(command);
 
-            // Create the aggregate and rehydrate it
-            ScreenAggregate aggregate = new ScreenAggregate(command.uuid());
-            aggregate.rehydrate(eventStream);
+        // Persist and publish events
+        eventStore.saveAndPublish(aggregate);
 
-            if (aggregate.isDeleted()) {
-                throw new IllegalStateException("Cannot update a deleted screen");
-            }
+        // Update the write model in the repository
+        screenWriteRepository.delete(command);
+    }
 
-            // Apply the update command
-            aggregate.deleteScreen(command);
+    private ScreenAggregate rehydrate(UUID uuid, String errorText){
 
-            // Persist and publish events
-            eventStore.saveAndPublish(aggregate);
-            // Update the write model in the repository
-            screenWriteRepository.delete(command);
+        List<BaseEvent> eventStream = eventStore.loadEventsForAggregate(uuid);
 
-        }else {
-            throw new IllegalArgumentException("Screen not found with ID: " + command.uuid());
+        if (eventStream.isEmpty()) {
+            throw new IllegalArgumentException("Form not found with ID: " + uuid);
         }
 
+        // Create the aggregate and rehydrate it
+        ScreenAggregate aggregate = new ScreenAggregate(uuid);
+        aggregate.rehydrate(eventStream);
+
+        if (aggregate.isDeleted()) {
+            throw new IllegalStateException(errorText);
+        }
+        return aggregate;
     }
 }
