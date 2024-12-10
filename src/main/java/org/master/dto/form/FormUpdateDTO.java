@@ -1,9 +1,7 @@
 package org.master.dto.form;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +22,7 @@ public class FormUpdateDTO {
     UUID primaryLanguageId;
     List<Integer> rowMaxHeights;
     @Schema(
-            description = "JSON of local variables for screen creation",
+            description = "JSON of column mapping variables for form update",
             example = "{ \"columns\": [ " +
                     "{\"name\": \"test_input\", \"data_type\": \"String\"}," +
                     "{\"name\": \"number_input\", \"data_type\": \"Integer\"}" +
@@ -32,7 +30,7 @@ public class FormUpdateDTO {
     )
     JsonNode columnMapping;
     @Schema(
-            description = "JSON of local variables for screen creation",
+            description = "JSON of visual definition variables for form update",
             example =
                     "{\"definition\": \"definition\", \"background\": \"background\"}"
     )

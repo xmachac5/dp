@@ -2,6 +2,7 @@ package org.master.repository.dataObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -50,8 +51,9 @@ public class DataObjectWriteRepository implements PanacheRepository<DataObjectsW
         dataObjectsWriteModel.setUpdatedAt(LocalDateTime.now());
 
         //Delete all existing columns
-        List<DataObjectsColumnWriteModel> existingColumns = em.createQuery("SELECT d FROM DataObjectsColumnWriteModel d WHERE d.dataObjectsWriteModelUuid = :dataObject", DataObjectsColumnWriteModel.class)
-                .setParameter("dataObject", dataObjectsWriteModel)
+        List<DataObjectsColumnWriteModel> existingColumns = em.createQuery("SELECT d FROM DataObjectsColumnWriteModel d" +
+                        " WHERE d.dataObjectsWriteModelUuid.id = :uuid", DataObjectsColumnWriteModel.class)
+                .setParameter("uuid", dataObjectsWriteModel.getId())
                 .getResultList();
 
         for (DataObjectsColumnWriteModel column : existingColumns) {
@@ -64,37 +66,56 @@ public class DataObjectWriteRepository implements PanacheRepository<DataObjectsW
         em.merge(dataObjectsWriteModel);
     }
 
-    private void createColumns(DataObjectsWriteModel dataObjectsWriteModel, JsonNode columnsNode) {
+    private void createColumns(DataObjectsWriteModel dataObjectsWriteModel, JsonNode columns) {
+        JsonNode columnsNode = columns.get("columns");
         if (columnsNode != null && columnsNode.isArray()) {
             for (JsonNode columnNode : columnsNode) {
-                DataObjectsColumnWriteModel dataEntity = new DataObjectsColumnWriteModel();
-                dataEntity.setName(columnNode.get("name").asText());
-                dataEntity.setPrimaryKey(columnNode.get("primaryKey").asBoolean());
-                dataEntity.setDataType(columnNode.get("dataType").asText());
-                dataEntity.setIsFk(columnNode.get("isFk").asBoolean());
-                dataEntity.setDescription(columnNode.get("description").asText());
+                if (columnNode.has("name") && columnNode.has("data_type") &&
+                        columnNode.has("primaryKey") && columnNode.has("isFk") && columnNode.has("description")) {
+                    Log.info(columnNode);
+                    DataObjectsColumnWriteModel dataEntity = new DataObjectsColumnWriteModel();
+                    dataEntity.setId(UUID.randomUUID());
+                    dataEntity.setName(columnNode.get("name").asText());
+                    dataEntity.setPrimaryKey(Boolean.parseBoolean(columnNode.get("primaryKey").asText()));
+                    dataEntity.setDataType(columnNode.get("data_type").asText());
+                    dataEntity.setIsFk(Boolean.parseBoolean(columnNode.get("isFk").asText()));
+                    dataEntity.setDescription(columnNode.get("description").asText());
 
-                // Set the relationship with DataObjectsWriteModel
-                dataEntity.setDataObjectsWriteModelUuid(dataObjectsWriteModel);
+                    // Set the relationship with DataObjectsWriteModel
+                    dataEntity.setDataObjectsWriteModelUuid(dataObjectsWriteModel);
 
-                // If there's a foreign key reference, set that as well
-                if (columnNode.has("dataObjectsWriteModelForeignKeyUuid")) {
-                    UUID foreignKeyUuid = UUID.fromString(columnNode.get("dataObjectsWriteModelForeignKeyUuid").asText());
-                    DataObjectsWriteModel foreignKeyModel = em.find(DataObjectsWriteModel.class, foreignKeyUuid);
-                    if (foreignKeyModel != null) {
-                        dataEntity.setDataObjectsWriteModelForeignKeyUuid(foreignKeyModel);
+                    // If there's a foreign key reference, set that as well
+                    if (columnNode.has("dataObjectsWriteModelForeignKeyUuid")) {
+                        UUID foreignKeyUuid = UUID.fromString(columnNode.get("dataObjectsWriteModelForeignKeyUuid").asText());
+                        DataObjectsWriteModel foreignKeyModel = em.find(DataObjectsWriteModel.class, foreignKeyUuid);
+                        if (foreignKeyModel != null) {
+                            dataEntity.setDataObjectsWriteModelForeignKeyUuid(foreignKeyModel);
+                        }
                     }
-                }
 
-                // Persist each new Data entity
-                em.persist(dataEntity);
+                    // Persist each new Data entity
+                    em.persist(dataEntity);
+                }else {
+                    throw new IllegalArgumentException("Invalid column entry: " + columnNode);
+                }
             }
         }
     }
 
     public void delete(DeleteDataObjectCommand deleteDataObjectCommand) {
         DataObjectsWriteModel dataObjectsWriteModel = em.find(DataObjectsWriteModel.class, deleteDataObjectCommand.uuid());
-        dataObjectsWriteModel.setDeleted(userRepository.getCurrentUser(), LocalDateTime.now());
+
+        if (dataObjectsWriteModel != null) {
+            List<DataObjectsColumnWriteModel> columns = em.createQuery(
+                    "SELECT c FROM DataObjectsColumnWriteModel c WHERE c.dataObjectsWriteModelUuid.id = :uuid",
+                    DataObjectsColumnWriteModel.class
+            ).setParameter("uuid", dataObjectsWriteModel.getId()).getResultList();
+
+            for (DataObjectsColumnWriteModel column : columns) {
+                column.setDeleted(userRepository.getCurrentUser(), LocalDateTime.now());
+            }
+            dataObjectsWriteModel.setDeleted(userRepository.getCurrentUser(), LocalDateTime.now());
+        }
     }
 
     public DataObjectsWriteModel findByUuid(UUID uuid) {

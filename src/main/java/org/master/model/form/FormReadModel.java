@@ -16,7 +16,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "forms_definitions_write_model")
+@Table(name = "forms_definitions_read_model")
 public class FormReadModel {
     @Id
     @Column(updatable = false, nullable = false, columnDefinition = "UUID")

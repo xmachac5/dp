@@ -29,14 +29,19 @@ public class DataObjectCommandResource {
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createDataObject(@Valid DataObjectCreateDTO dataObjectCreateDTO){
-        dataObjectCommandHandler.handle(new CreateDataObjectCommand(
-                dataObjectCreateDTO.getName(),
-                dataObjectCreateDTO.getDescription(),
-                dataObjectCreateDTO.getTrackChanges(),
-                dataObjectCreateDTO.getSoftDelete(),
-                dataObjectCreateDTO.getColumns()
-        ));
-        return Response.status(Response.Status.CREATED).build();
+        try {
+            dataObjectCommandHandler.handle(new CreateDataObjectCommand(
+                    dataObjectCreateDTO.getName(),
+                    dataObjectCreateDTO.getDescription(),
+                    dataObjectCreateDTO.getTrackChanges(),
+                    dataObjectCreateDTO.getSoftDelete(),
+                    dataObjectCreateDTO.getColumns()
+            ));
+            return Response.status(Response.Status.CREATED).build();
+        }
+        catch (IllegalArgumentException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 
     @Operation(summary = "Update data object", description = "Update data object with the provided data")

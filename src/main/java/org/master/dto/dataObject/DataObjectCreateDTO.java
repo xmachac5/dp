@@ -21,14 +21,14 @@ public class DataObjectCreateDTO {
     Boolean softDelete;
     @NotNull
     @Schema(
-            description = "JSON of local variables for screen creation",
+            description = "JSON of columns variables for data object creation",
             example = "{ \"columns\": [ " +
                     "{\"name\": \"text_input\", \"data_type\": \"String\", \"primaryKey\": \"False\"," +
-                    " \"isFk\": \"False\", \"description\": \"Text\"}," +
+                    "\"isFk\": \"False\", \"description\": \"Text\"}," +
                     "{\"name\": \"id\", \"data_type\": \"Integer\", \"primaryKey\": \"True\"," +
-                    " \"isFk\": \"False\", \"description\": \"Primary Key\"}," +
+                    "\"isFk\": \"False\", \"description\": \"Primary Key\"}," +
                     "{\"name\": \"other_table\", \"data_type\": \"Integer\", \"primaryKey\": \"False\"," +
-                    " \"isFk\": \"True\", \"description\": \"Other table id\"}," +
+                    "\"isFk\": \"True\", \"description\": \"Other table id\"}" +
                     "]}"
     )
     JsonNode columns;

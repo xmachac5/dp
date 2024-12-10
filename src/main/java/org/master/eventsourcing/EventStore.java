@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import org.master.domain.AggregateRoot;
 import org.master.domain.dataObject.DataObjectAggregate;
 import org.master.domain.form.FormAggregate;
+import org.master.domain.process.ProcessAggregate;
+import org.master.domain.process.TaskAggregate;
 import org.master.domain.screen.ScreenAggregate;
 import org.master.domain.script.ScriptAggregate;
 import org.master.events.BaseEvent;
@@ -38,6 +40,12 @@ public class EventStore {
     DataObjectEventPublisher dataObjectEventPublisher;
 
     @Inject
+    ProcessEventPublisher processEventPublisher;
+
+    @Inject
+    TaskEventPublisher taskEventPublisher;
+
+    @Inject
     EventSerializer eventSerializer;
 
     @Inject
@@ -64,6 +72,15 @@ public class EventStore {
         saveAndPublish(aggregate, dataObjectEventPublisher);
     }
 
+    @Transactional
+    public void saveAndPublish(ProcessAggregate aggregate) {
+        saveAndPublish(aggregate, processEventPublisher);
+    }
+
+    @Transactional
+    public void saveAndPublish(TaskAggregate aggregate) {
+        saveAndPublish(aggregate, taskEventPublisher);
+    }
 
     @Transactional
     public void saveAndPublish(AggregateRoot aggregate, EventPublisher eventPublisher) {

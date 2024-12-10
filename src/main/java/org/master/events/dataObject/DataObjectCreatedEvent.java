@@ -3,15 +3,11 @@ package org.master.events.dataObject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.master.events.BaseEvent;
 
-import java.util.List;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)

@@ -14,7 +14,7 @@ import org.master.model.BaseEntity;
 public class FormWriteModel extends BaseEntity {
 
     private String name;
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne
     @JoinColumn(name = "latestVersionUuid", referencedColumnName = "id")
     private FormVersionWriteModel latestVersionUuid;
 

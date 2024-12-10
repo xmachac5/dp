@@ -36,13 +36,15 @@ public class FormWriteRepository implements PanacheRepository<FormWriteModel> {
                 createFormCommands.rowHeights(), createFormCommands.primaryLanguageId(), createFormCommands.rowMaxHeights(),
                 createFormCommands.columnMapping(), 1);
 
-        formWriteModel.setLatestVersionUuid(formVersionWriteModel);
         em.persist(formWriteModel);
+        em.persist(formVersionWriteModel);
+        formWriteModel.setLatestVersionUuid(formVersionWriteModel);
+        em.merge(formWriteModel);
     }
 
     public void update(UpdateFormCommand updateFormCommand ) {
         FormWriteModel formWriteModel = em.find(FormWriteModel.class, updateFormCommand.id());
-        FormVersionWriteModel latestVersion = em.find(FormVersionWriteModel.class, formWriteModel.getLatestVersionUuid());
+        FormVersionWriteModel latestVersion = em.find(FormVersionWriteModel.class, formWriteModel.getLatestVersionUuid().getId());
         formWriteModel.setUpdatedBy(userRepository.getCurrentUser());
         formWriteModel.setUpdatedAt(LocalDateTime.now());
         FormVersionWriteModel formVersionWriteModel = createFormVersion(formWriteModel, updateFormCommand.definition(),
@@ -55,7 +57,18 @@ public class FormWriteRepository implements PanacheRepository<FormWriteModel> {
 
     public void delete(DeleteFormCommand deleteFormCommand) {
         FormWriteModel formWriteModel = em.find(FormWriteModel.class, deleteFormCommand.uuid());
-        formWriteModel.setDeleted(userRepository.getCurrentUser(), LocalDateTime.now());
+        if (formWriteModel != null) {
+            List<FormVersionWriteModel> versions = em.createQuery(
+                    "SELECT fv FROM FormVersionWriteModel fv WHERE fv.formWriteModel.id = :uuid",
+                    FormVersionWriteModel.class
+            ).setParameter("uuid", formWriteModel.getId()).getResultList();
+
+            for (FormVersionWriteModel version : versions) {
+                version.setDeleted(userRepository.getCurrentUser(), LocalDateTime.now());
+            }
+
+            formWriteModel.setDeleted(userRepository.getCurrentUser(), LocalDateTime.now());
+        }
     }
 
     private FormVersionWriteModel createFormVersion(FormWriteModel formWriteModel, JsonNode definition, Integer columns,

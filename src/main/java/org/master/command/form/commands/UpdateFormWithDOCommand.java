@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record UpdateFormWithDOCommand(
-        @NotNull
-        UUID id,
+        @NotNull UUID id,
         @NotNull Integer columns,
         @NotNull List<Integer> rowHeights,
         @NotNull UUID primaryLanguageId,

@@ -17,7 +17,7 @@ public class DataObjectEventListener {
     DataObjectReadRepository dataObjectReadRepository;
 
     @ActivateRequestContext
-    @Incoming("form-commands")
+    @Incoming("data_object-commands")
     @Transactional
     public void consume(BaseEvent event) {
         if (event instanceof DataObjectCreatedEvent) {

@@ -26,15 +26,19 @@ public class FormCreateWithDODTO {
     UUID primaryLanguageId;
     List<Integer> rowMaxHeights;
     @Schema(
-            description = "JSON of local variables for screen creation",
+            description = "JSON of column mapping variables for form with DO creation",
             example = "{ \"columns\": [ " +
-                    "{\"name\": \"test_input\", \"data_type\": \"String\"}," +
-                    "{\"name\": \"number_input\", \"data_type\": \"Integer\"}" +
+                    "{\"name\": \"text_input\", \"data_type\": \"String\", \"primaryKey\": \"False\"," +
+                    "\"isFk\": \"False\", \"description\": \"Text\"}," +
+                    "{\"name\": \"id\", \"data_type\": \"Integer\", \"primaryKey\": \"True\"," +
+                    "\"isFk\": \"False\", \"description\": \"Primary Key\"}," +
+                    "{\"name\": \"other_table\", \"data_type\": \"Integer\", \"primaryKey\": \"False\"," +
+                    "\"isFk\": \"True\", \"description\": \"Other table id\"}" +
                     "]}"
     )
     JsonNode columnMapping;
     @Schema(
-            description = "JSON of local variables for screen creation",
+            description = "JSON of visual definition variables for form creation",
             example =
                     "{\"definition\": \"definition\", \"background\": \"background\"}"
     )
