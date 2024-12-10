@@ -15,7 +15,7 @@ import java.util.UUID;
 public class ProcessAggregate extends AggregateRoot {
 
     private String name;
-    private Integer version;
+    private Integer processVersion;
     private JsonNode variables;
     private Boolean published;
 
@@ -89,7 +89,7 @@ public class ProcessAggregate extends AggregateRoot {
         this.name = processCreatedEvent.getName();
         this.published = false;
         this.variables = processCreatedEvent.getVariables();
-        this.version = 1;
+        this.processVersion = 1;
     }
 
     private void handle(final ProcessUpdatedEvent processUpdatedEvent){
@@ -107,7 +107,7 @@ public class ProcessAggregate extends AggregateRoot {
     }
 
     private void handle(ProcessPublishedEvent processPublishedEvent){
-        this.version = this.version + 1;
+        this.processVersion = this.processVersion + 1;
         this.published = true;
     }
 

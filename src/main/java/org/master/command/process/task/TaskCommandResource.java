@@ -22,6 +22,7 @@ public class TaskCommandResource {
 
     @Operation(summary = "Create a new DO task", description = "Creates a DO task with the provided data")
     @POST
+    @Path("/do")
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createDOTask(@Valid DOTaskCreateDTO DOTaskCreateDTO){
@@ -36,6 +37,7 @@ public class TaskCommandResource {
 
     @Operation(summary = "Create a new Screen task", description = "Creates a Screen task with the provided data")
     @POST
+    @Path("/screen")
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createScreenTask(@Valid ScreenTaskCreateDTO ScreenTaskCreateDTO){
@@ -49,6 +51,7 @@ public class TaskCommandResource {
 
     @Operation(summary = "Create a new Script task", description = "Creates a Script task with the provided data")
     @POST
+    @Path("/script")
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createScriptTask(@Valid ScriptTaskCreateDTO scriptTaskCreateDTO){
@@ -62,6 +65,7 @@ public class TaskCommandResource {
 
     @Operation(summary = "Update DO task", description = "Update DO task with the provided data")
     @PUT
+    @Path("/do")
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateDOTask(@QueryParam("task id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id,
@@ -82,6 +86,7 @@ public class TaskCommandResource {
 
     @Operation(summary = "Update Screen task", description = "Update Screen task with the provided data")
     @PUT
+    @Path("/screen")
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateScreenTask(@QueryParam("task id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id,
@@ -101,6 +106,7 @@ public class TaskCommandResource {
 
     @Operation(summary = "Update script task", description = "Update script task with the provided data")
     @PUT
+    @Path("/script")
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateScriptTask(@QueryParam("task id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id,

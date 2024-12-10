@@ -67,7 +67,8 @@ public class ProcessCommandResource {
     }
 
     @Operation(summary = "Concept process", description = "Concept process with the provided id")
-    @DELETE
+    @POST
+    @Path("/concept")
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response conceptProcess(@QueryParam("process id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id){
@@ -82,7 +83,8 @@ public class ProcessCommandResource {
     }
 
     @Operation(summary = "Publish process", description = "Publish process with the provided id")
-    @DELETE
+    @PUT
+    @Path("/publish")
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response publishProcess(@QueryParam("process id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id){

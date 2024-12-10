@@ -67,6 +67,7 @@ public class FormCommandResource {
 
     @Operation(summary = "Create a new form", description = "Creates a form with the provided data")
     @POST
+    @Path("/do")
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createFormWithDO(@Valid FormCreateWithDODTO formCreateWithDODTO){
@@ -86,6 +87,7 @@ public class FormCommandResource {
 
     @Operation(summary = "Update form", description = "Update form with the provided data")
     @PUT
+    @Path("/do")
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateScreenWithDO(@QueryParam("form id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id,
@@ -127,6 +129,7 @@ public class FormCommandResource {
 
     @Operation(summary = "Delete form", description = "Delete form with the provided data")
     @DELETE
+    @Path("/do")
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteFormWithDO(@QueryParam("form id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id){
