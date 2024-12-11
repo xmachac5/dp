@@ -11,27 +11,8 @@ You can run your application in dev mode that enables live coding using:
 ```shell script
 
 Použite wrapper Gradle na spustenie vašej aplikácie:
-podman machine start - pokial nebezi
-podman start zookeeper
-podman start postgres
-podman start kafka
-(Keď sa niektorý nepodarí znova vytvoriť ako v krokoch vyššie)
-podman ps (zvyčajne nenabehne kafka)
-SKontrolovat ci su vsetky topics:
-podman exec -it kafka kafka-topics.sh --list --bootstrap-server localhost:9094
-Ked nie je tak:
-podman exec -it kafka kafka-topics.sh --create --topic screen-commands --bootstrap-server localhost:9094 --partitions 1 --replication-factor 1
-podman exec -it kafka kafka-topics.sh --create --topic screen-events --bootstrap-server localhost:9094 --partitions 1 --replication-factor 1
-podman exec -it kafka kafka-topics.sh --create --topic script-commands --bootstrap-server localhost:9094 --partitions 1 --replication-factor 1
-podman exec -it kafka kafka-topics.sh --create --topic script-events --bootstrap-server localhost:9094 --partitions 1 --replication-factor 1
-podman exec -it kafka kafka-topics.sh --create --topic form-commands --bootstrap-server localhost:9094 --partitions 1 --replication-factor 1
-podman exec -it kafka kafka-topics.sh --create --topic form-events --bootstrap-server localhost:9094 --partitions 1 --replication-factor 1
-podman exec -it kafka kafka-topics.sh --create --topic data_object-commands --bootstrap-server localhost:9094 --partitions 1 --replication-factor 1
-podman exec -it kafka kafka-topics.sh --create --topic data_object-events --bootstrap-server localhost:9094 --partitions 1 --replication-factor 1
-podman exec -it kafka kafka-topics.sh --create --topic process-commands --bootstrap-server localhost:9094 --partitions 1 --replication-factor 1
-podman exec -it kafka kafka-topics.sh --create --topic process-events --bootstrap-server localhost:9094 --partitions 1 --replication-factor 1
-podman exec -it kafka kafka-topics.sh --create --topic task-commands --bootstrap-server localhost:9094 --partitions 1 --replication-factor 1
-podman exec -it kafka kafka-topics.sh --create --topic task-events --bootstrap-server localhost:9094 --partitions 1 --replication-factor 1
+
+./gradlew setupEnvironment
 ./gradlew clean build
 ./gradlew quarkusDev
 

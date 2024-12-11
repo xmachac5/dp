@@ -55,3 +55,181 @@ compileJava {
 compileTestJava {
     options.encoding = 'UTF-8'
 }
+
+tasks.register('startPodmanMachine') {
+    group = "podman"
+    description = "Start the Podman machine if it's not running"
+
+    doLast {
+        println "Checking Podman machine status..."
+        def machineStatus = new ByteArrayOutputStream()
+        exec {
+            commandLine "podman", "machine", "list", "--format", "{{.Running}}"
+            standardOutput = machineStatus
+            ignoreExitValue = true
+        }
+
+        def statusOutput = machineStatus.toString().trim()
+        if (statusOutput.contains("true")) {
+            println "Podman machine is already running. Skipping start."
+        } else {
+            println "Starting Podman machine..."
+            try {
+                exec {
+                    commandLine "podman", "machine", "start"
+                }
+                println "Podman machine started!"
+            } catch (Exception e) {
+                println "Failed to start Podman machine. Please check your Podman setup."
+                throw e
+            }
+
+            // Check Podman socket readiness
+            def retries = 5
+            def delay = 5000 // 5 seconds
+            def podmanReady = false
+
+            for (int i = 1; i <= retries; i++) {
+                println "Checking Podman socket readiness (Attempt $i/$retries)..."
+                try {
+                    exec {
+                        commandLine "podman", "info"
+                    }
+                    podmanReady = true
+                    break
+                } catch (Exception e) {
+                    println "Podman socket not ready yet. Retrying in $delay ms..."
+                    sleep(delay)
+                }
+            }
+
+            if (!podmanReady) {
+                throw new GradleException("Podman socket did not become ready in time. Please check the logs.")
+            }
+
+            println "Podman is fully initialized and ready."
+        }
+    }
+}
+
+// Podman Compose Tasks
+tasks.register('composeUp') {
+    dependsOn tasks.named('startPodmanMachine')
+    group = "podman"
+    description = "Start services using Podman Compose"
+
+    doLast {
+        exec {
+            commandLine "podman-compose", "up", "-d"
+        }
+        println "Containers started with Podman Compose!"
+    }
+}
+
+tasks.register('composeDown') {
+    group = "podman"
+    description = "Stop services using Podman Compose"
+
+    doLast {
+        exec {
+            commandLine "podman-compose", "down"
+        }
+        println "Containers stopped and cleaned up!"
+    }
+}
+
+tasks.register('composeLogs') {
+    group = "podman"
+    description = "Show logs for the Podman Compose services"
+
+    doLast {
+        exec {
+            commandLine "podman-compose", "logs"
+        }
+    }
+}
+
+tasks.register('startKafka') {
+    dependsOn tasks.named('composeUp') // Ensure containers are created first
+    group = "podman"
+    description = "Ensure Kafka starts successfully and is ready"
+
+    doLast {
+        def retries = 5
+        def delay = 5000 // 5 seconds
+        def zookeeperReady = false
+
+        println "Checking Zookeeper readiness..."
+        for (int i = 1; i <= retries; i++) {
+            try {
+                def output = new ByteArrayOutputStream()
+                exec {
+                    commandLine "podman", "exec", "-it", "zookeeper", "nc", "-z", "localhost", "2181"
+                    ignoreExitValue = true
+                }
+                if (output.toString().trim().contains("imok") || output.toString().trim() == "") {
+                    zookeeperReady = true
+                    break
+                } else {
+                    println "Zookeeper is not ready yet. Retrying in $delay ms..."
+                    sleep(delay)
+                }
+            } catch (Exception e) {
+                println "Error checking Zookeeper readiness: ${e.message}. Retrying in $delay ms..."
+                sleep(delay)
+            }
+        }
+
+        if (!zookeeperReady) {
+            throw new GradleException("Zookeeper did not become ready in time. Please check the logs.")
+        }
+        println "Zookeeper is ready."
+
+        // Start Kafka
+        println "Starting Kafka container..."
+        exec {
+            commandLine "podman", "start", "kafka"
+        }
+        println "Kafka is running and ready."
+    }
+}
+
+tasks.register('createTopics') {
+    dependsOn tasks.named('startKafka')
+    group = "podman"
+    description = "Create Kafka topics after starting services"
+
+    doLast {
+        def topics = [
+                "screen-commands", "screen-events", "script-commands", "script-events",
+                "form-commands", "form-events", "data_object-commands", "data_object-events",
+                "process-commands", "process-events", "task-commands", "task-events"
+        ]
+        topics.each { topic ->
+            try {
+                println "Checking if topic '$topic' exists..."
+                exec {
+                    commandLine "podman", "exec", "-it", "kafka", "kafka-topics.sh",
+                            "--describe", "--topic", topic, "--bootstrap-server", "localhost:9094"
+                }
+                println "Topic '$topic' already exists."
+            } catch (Exception e) {
+                println "Topic '$topic' does not exist. Creating it..."
+                exec {
+                    commandLine "podman", "exec", "-it", "kafka", "kafka-topics.sh",
+                            "--create", "--topic", topic,
+                            "--bootstrap-server", "localhost:9094",
+                            "--partitions", "1", "--replication-factor", "1"
+                }
+                println "Topic '$topic' created."
+            }
+        }
+    }
+}
+
+// Full Workflow Task
+tasks.register('setupEnvironment') {
+    dependsOn tasks.named('createTopics')
+    group = "podman"
+    description = "Set up the complete environment (containers + Kafka topics)"
+}
