@@ -13,7 +13,7 @@ import org.master.model.BaseEntity;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "processes_version_definitions_write_model")
+@Table(name = "processes_write_model")
 public class ProcessWriteModel extends BaseEntity {
     private String name;
     @OneToOne

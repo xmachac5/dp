@@ -5,8 +5,8 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import org.master.dto.process.ProcessDetailDTO;
 import org.master.dto.process.ProcessListDTO;
+import org.master.dto.process.task.TaskListDTO;
 import org.master.model.process.ProcessReadModel;
-import org.master.model.process.task.TaskReadModel;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,15 +25,16 @@ public class ProcessService {
 
     public ProcessDetailDTO findByUuid(UUID uuid) {
         ProcessReadModel processReadModel = em.find(ProcessReadModel.class, uuid);
-        List<TaskReadModel> taskReadModelList = em.createQuery(
-                "SELECT t FROM TaskReadModel t WHERE t.processReadModel.id = :uuid",
-                TaskReadModel.class
+        List<TaskListDTO> taskListDTOs = em.createQuery(
+                "SELECT new org.master.dto.process.task.TaskListDTO(t.id, t.type, t.targetEntityUuid," +
+                        " t.variableMapping, t.columnsMapping) FROM TaskReadModel t WHERE t.processReadModel.id = :uuid",
+                TaskListDTO.class
         ).setParameter("uuid", processReadModel.getId()).getResultList();
 
         return new ProcessDetailDTO(
                 processReadModel.getId(),
                 processReadModel.getVariables(),
-                taskReadModelList
+                taskListDTOs
         );
     }
 }

@@ -13,7 +13,7 @@ import org.master.model.BaseEntity;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "forms_version_definitions_write_model")
+@Table(name = "processes_version_definitions_write_model")
 public class ProcessVersionWriteModel extends BaseEntity {
     private Boolean published;
     @ManyToOne

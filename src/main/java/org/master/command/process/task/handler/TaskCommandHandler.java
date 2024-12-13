@@ -7,6 +7,8 @@ import org.master.command.process.task.commands.*;
 import org.master.domain.process.TaskAggregate;
 import org.master.events.BaseEvent;
 import org.master.eventsourcing.EventStore;
+import org.master.model.process.ProcessWriteModel;
+import org.master.repository.process.ProcessWriteRepository;
 import org.master.repository.process.TaskWriteRepository;
 
 import java.util.List;
@@ -20,11 +22,17 @@ public class TaskCommandHandler {
     @Inject
     TaskWriteRepository taskWriteRepository;
 
+    @Inject
+    ProcessWriteRepository processWriteRepository;
+
     @Transactional
     public void handle(CreateDOTaskCommand command) {
 
+        //Find process write model by version uuid
+        ProcessWriteModel processWriteModel = processWriteRepository.findByVersionUuid(command.processVersionWriteModel());
+
         // Use factory method to create a new aggregate
-        TaskAggregate aggregate = TaskAggregate.createTask(command);
+        TaskAggregate aggregate = TaskAggregate.createTask(command, processWriteModel.getId());
 
         // Persist and publish events
         eventStore.saveAndPublish(aggregate);
@@ -36,8 +44,11 @@ public class TaskCommandHandler {
     @Transactional
     public void handle(CreateScreenTaskCommand command) {
 
+        //Find process write model by version uuid
+        ProcessWriteModel processWriteModel = processWriteRepository.findByVersionUuid(command.processVersionWriteModel());
+
         // Use factory method to create a new aggregate
-        TaskAggregate aggregate = TaskAggregate.createTask(command);
+        TaskAggregate aggregate = TaskAggregate.createTask(command, processWriteModel.getId());
 
         // Persist and publish events
         eventStore.saveAndPublish(aggregate);
@@ -49,8 +60,11 @@ public class TaskCommandHandler {
     @Transactional
     public void handle(CreateScriptTaskCommand command) {
 
+        //Find process write model by version uuid
+        ProcessWriteModel processWriteModel = processWriteRepository.findByVersionUuid(command.processVersionWriteModel());
+
         // Use factory method to create a new aggregate
-        TaskAggregate aggregate = TaskAggregate.createTask(command);
+        TaskAggregate aggregate = TaskAggregate.createTask(command, processWriteModel.getId());
 
         // Persist and publish events
         eventStore.saveAndPublish(aggregate);

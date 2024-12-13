@@ -18,7 +18,7 @@ public class ProcessCreateDTO {
             description = "JSON of process variables",
             example = "{ \"variables\": [ " +
                     "{\"name\": \"input_variable\", \"type\": \"Input\"}," +
-                    "{\"name\": \"output_variable\", \"type\": \"Output\"}" +
+                    "{\"name\": \"output_variable\", \"type\": \"Output\"}," +
                     "{\"name\": \"local_variable\", \"type\": \"Local\"}" +
                     "]}"
     )

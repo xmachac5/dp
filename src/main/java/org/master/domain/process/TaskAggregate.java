@@ -29,7 +29,7 @@ public class TaskAggregate extends AggregateRoot {
     }
 
     // Factory method to create a new TaskAggregate from DO task command
-    public static TaskAggregate createTask(CreateDOTaskCommand createDOTaskCommand) {
+    public static TaskAggregate createTask(CreateDOTaskCommand createDOTaskCommand, UUID processWriteModel) {
         UUID id = UUID.randomUUID(); // Generate a new UUID for the aggregate
         TaskAggregate aggregate = new TaskAggregate(id);
         // Creating the TaskCreatedEvent with all necessary data
@@ -39,7 +39,7 @@ public class TaskAggregate extends AggregateRoot {
                 createDOTaskCommand.variableMapping(),
                 TaskType.DO,
                 createDOTaskCommand.dataObjectsWriteModel(),
-                createDOTaskCommand.processVersionWriteModel(),
+                processWriteModel,
                 createDOTaskCommand.columnsMapping()
         );
         aggregate.apply(event);
@@ -47,7 +47,7 @@ public class TaskAggregate extends AggregateRoot {
     }
 
     // Factory method to create a new TaskAggregate from DO task command
-    public static TaskAggregate createTask(CreateScreenTaskCommand createScreenTaskCommand) {
+    public static TaskAggregate createTask(CreateScreenTaskCommand createScreenTaskCommand, UUID processWriteModel) {
         UUID id = UUID.randomUUID(); // Generate a new UUID for the aggregate
         TaskAggregate aggregate = new TaskAggregate(id);
         // Creating the TaskCreatedEvent with all necessary data
@@ -57,7 +57,7 @@ public class TaskAggregate extends AggregateRoot {
                 createScreenTaskCommand.variableMapping(),
                 TaskType.SCREEN,
                 createScreenTaskCommand.screenWriteModel(),
-                createScreenTaskCommand.processVersionWriteModel(),
+                processWriteModel,
                 null
         );
         aggregate.apply(event);
@@ -65,7 +65,7 @@ public class TaskAggregate extends AggregateRoot {
     }
 
     // Factory method to create a new TaskAggregate from DO task command
-    public static TaskAggregate createTask(CreateScriptTaskCommand createScriptTaskCommand) {
+    public static TaskAggregate createTask(CreateScriptTaskCommand createScriptTaskCommand, UUID processWriteModel) {
         UUID id = UUID.randomUUID(); // Generate a new UUID for the aggregate
         TaskAggregate aggregate = new TaskAggregate(id);
         // Creating the TaskCreatedEvent with all necessary data
@@ -75,7 +75,7 @@ public class TaskAggregate extends AggregateRoot {
                 createScriptTaskCommand.variableMapping(),
                 TaskType.SCRIPT,
                 createScriptTaskCommand.scriptWriteModel(),
-                createScriptTaskCommand.processVersionWriteModel(),
+                processWriteModel,
                 null
         );
         aggregate.apply(event);

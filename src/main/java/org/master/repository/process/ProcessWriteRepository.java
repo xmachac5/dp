@@ -151,6 +151,10 @@ public class ProcessWriteRepository {
 
     }
 
+    public ProcessWriteModel findByVersionUuid(UUID uuid){
+        return em.find(ProcessVersionWriteModel.class, uuid).getProcessWriteModel();
+    }
+
     public void setUpdatedVersion(ProcessVersionWriteModel processVersionWriteModel) {
         processVersionWriteModel.setUpdatedAt(LocalDateTime.now());
         processVersionWriteModel.setUpdatedBy(userRepository.getCurrentUser());
