@@ -93,7 +93,7 @@ public class ProcessCommandHandler {
 
         ProcessAggregate aggregate = rehydrateProcess(command.uuid(), "Cannot delete deleted Form Handler");
 
-        if (!aggregate.getPublished()) {
+        if (aggregate.getPublished()) {
             throw new IllegalStateException("Can not publish published process.");
         }
 

@@ -207,9 +207,21 @@ public class TaskWriteRepository {
 
         ProcessVersionWriteModel lastVersion = processWriteModel.getProcessVersionWriteModel();
 
-        List<TaskWriteModel> tasks = findByProcessVersion(lastVersion);
+        List<DOTaskWriteModel> DOTasks = findDOTasksByProcessVersion(lastVersion);
 
-        for (TaskWriteModel task : tasks) {
+        List<ScriptTaskWriteModel> ScriptTasks = findScriptTasksByProcessVersion(lastVersion);
+
+        List<ScreenTaskWriteModel> ScreenTasks = findScreenTasksByProcessVersion(lastVersion);
+
+        for (DOTaskWriteModel task : DOTasks) {
+            TaskWriteModel newTask = copyTaskForNewVersion(task, processVersionWriteModel);
+            em.persist(newTask); // Persist the copied task
+        }
+        for (ScriptTaskWriteModel task : ScriptTasks) {
+            TaskWriteModel newTask = copyTaskForNewVersion(task, processVersionWriteModel);
+            em.persist(newTask); // Persist the copied task
+        }
+        for (ScreenTaskWriteModel task : ScreenTasks) {
             TaskWriteModel newTask = copyTaskForNewVersion(task, processVersionWriteModel);
             em.persist(newTask); // Persist the copied task
         }
@@ -225,16 +237,30 @@ public class TaskWriteRepository {
         };
     }
 
-    public List<TaskWriteModel> findByProcessVersion(ProcessVersionWriteModel processVersionWriteModel) {
+    public List<DOTaskWriteModel> findDOTasksByProcessVersion(ProcessVersionWriteModel processVersionWriteModel) {
         return em.createQuery(
                 """
-                        SELECT tDO FROM DOTaskWriteModel tDO WHERE tDO.processVersionWriteModel = :uuid
-                        UNION
-                        SELECT tS FROM ScreenTaskWriteModel tS WHERE tS.processVersionWriteModel = :uuid
-                        UNION
-                        SELECT tSC FROM ScriptTaskWriteModel tSC WHERE tSC.processVersionWriteModel = :uuid
+                        SELECT tDO FROM DOTaskWriteModel tDO WHERE tDO.processVersionWriteModel.id = :uuid
                     """,
-                TaskWriteModel.class
+                DOTaskWriteModel.class
+        ).setParameter("uuid", processVersionWriteModel.getId()).getResultList();
+    }
+
+    public List<ScreenTaskWriteModel> findScreenTasksByProcessVersion(ProcessVersionWriteModel processVersionWriteModel) {
+        return em.createQuery(
+                """
+                        SELECT tS FROM ScreenTaskWriteModel tS WHERE tS.processVersionWriteModel.id = :uuid
+                    """,
+                ScreenTaskWriteModel.class
+        ).setParameter("uuid", processVersionWriteModel.getId()).getResultList();
+    }
+
+    public List<ScriptTaskWriteModel> findScriptTasksByProcessVersion(ProcessVersionWriteModel processVersionWriteModel) {
+        return em.createQuery(
+                """
+                        SELECT tSC FROM ScriptTaskWriteModel tSC WHERE tSC.processVersionWriteModel.id = :uuid
+                    """,
+                ScriptTaskWriteModel.class
         ).setParameter("uuid", processVersionWriteModel.getId()).getResultList();
     }
 
@@ -242,6 +268,7 @@ public class TaskWriteRepository {
     private TaskWriteModel copyTaskForNewVersion(TaskWriteModel task, ProcessVersionWriteModel newVersion) {
         if (task instanceof DOTaskWriteModel doTask) {
             DOTaskWriteModel newTask = new DOTaskWriteModel();
+            newTask.setId(UUID.randomUUID());
             newTask.setName(doTask.getName());
             newTask.setDataObjectsWriteModel(doTask.getDataObjectsWriteModel());
             newTask.setColumnsMapping(doTask.getColumnsMapping());
@@ -250,6 +277,7 @@ public class TaskWriteRepository {
             return newTask;
         } else if (task instanceof ScreenTaskWriteModel screenTask) {
             ScreenTaskWriteModel newTask = new ScreenTaskWriteModel();
+            newTask.setId(UUID.randomUUID());
             newTask.setName(screenTask.getName());
             newTask.setScreenWriteModel(screenTask.getScreenWriteModel());
             newTask.setVariableMapping(screenTask.getVariableMapping());
@@ -257,6 +285,7 @@ public class TaskWriteRepository {
             return newTask;
         } else if (task instanceof ScriptTaskWriteModel scriptTask) {
             ScriptTaskWriteModel newTask = new ScriptTaskWriteModel();
+            newTask.setId(UUID.randomUUID());
             newTask.setName(scriptTask.getName());
             newTask.setScriptWriteModel(scriptTask.getScriptWriteModel());
             newTask.setVariableMapping(scriptTask.getVariableMapping());
