@@ -50,6 +50,24 @@ public class FormAggregate extends AggregateRoot {
         return aggregate;
     }
 
+    // Factory method to create a new FormAggregate and UUID
+    public static FormAggregate createForm(UUID id, CreateFormCommand createFormCommand) {
+        FormAggregate aggregate = new FormAggregate(id);
+        // Creating the FormCreatedEvent with all necessary data
+        FormCreatedEvent event = new FormCreatedEvent(
+                id,
+                createFormCommand.name(),
+                createFormCommand.columns(),
+                createFormCommand.rowHeights(),
+                createFormCommand.primaryLanguageId(),
+                createFormCommand.rowMaxHeights(),
+                createFormCommand.columnMapping(),
+                createFormCommand.definition()
+        );
+        aggregate.apply(event);
+        return aggregate;
+    }
+
     public void updateForm(UpdateFormCommand updateFormCommand) {
         // Creating the FormUpdatedEvent with all necessary data
         FormUpdatedEvent event = new FormUpdatedEvent(

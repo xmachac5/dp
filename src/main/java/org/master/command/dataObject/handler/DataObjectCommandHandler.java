@@ -32,7 +32,7 @@ public class DataObjectCommandHandler {
         // Persist and publish events
         eventStore.saveAndPublish(aggregate);
 
-        dataObjectWriteRepository.create(aggregate.getId(), command);
+        dataObjectWriteRepository.create(aggregate.getId(), command, 1);
 
     }
 

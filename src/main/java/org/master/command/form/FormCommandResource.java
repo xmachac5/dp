@@ -36,7 +36,8 @@ public class FormCommandResource {
                 formCreateDTO.getPrimaryLanguageId(),
                 formCreateDTO.getRowMaxHeights(),
                 formCreateDTO.getColumnMapping(),
-                formCreateDTO.getDefinition()
+                formCreateDTO.getDefinition(),
+                null
         ));
         return Response.status(Response.Status.CREATED).build();
     }
@@ -55,7 +56,8 @@ public class FormCommandResource {
                     formUpdateDTO.getPrimaryLanguageId(),
                     formUpdateDTO.getRowMaxHeights(),
                     formUpdateDTO.getColumnMapping(),
-                    formUpdateDTO.getDefinition()
+                    formUpdateDTO.getDefinition(),
+                    null
             ));
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
@@ -65,7 +67,7 @@ public class FormCommandResource {
         }
     }
 
-    @Operation(summary = "Create a new form", description = "Creates a form with the provided data")
+    @Operation(summary = "Create a new form with data object", description = "Creates a form and data object with the provided data")
     @POST
     @Path("/do")
     @RolesAllowed("admin")
@@ -85,7 +87,7 @@ public class FormCommandResource {
         return Response.status(Response.Status.CREATED).build();
     }
 
-    @Operation(summary = "Update form", description = "Update form with the provided data")
+    @Operation(summary = "Update form with nev version of data object", description = "Update form with the provided data and creates new version of data object")
     @PUT
     @Path("/do")
     @RolesAllowed("admin")
@@ -127,7 +129,7 @@ public class FormCommandResource {
         }
     }
 
-    @Operation(summary = "Delete form", description = "Delete form with the provided data")
+    @Operation(summary = "Delete form with data object", description = "Delete form and connected data object by the given id")
     @DELETE
     @Path("/do")
     @RolesAllowed("admin")

@@ -8,12 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import org.master.events.BaseEvent;
-import org.master.events.screen.ScreenCreatedEvent;
 import org.master.model.BaseEntity;
 import org.master.model.language.Language;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -51,34 +48,5 @@ public class ScreenWriteModel extends BaseEntity {
     @JdbcTypeCode(SqlTypes.JSON)
     private JsonNode background;
     private String title;
-
-
-    @Getter
-    @Transient
-    private List<BaseEvent> uncommittedChanges = new ArrayList<>();
-
-    public void applyEvent(BaseEvent event) {
-        // Apply the event to the aggregate
-        // Update state based on event type
-        if (event instanceof ScreenCreatedEvent) {
-            this.name = ((ScreenCreatedEvent) event).getName();
-            this.data = ((ScreenCreatedEvent) event).getData();
-            this.columns = ((ScreenCreatedEvent) event).getColumns();
-            this.rowHeights = ((ScreenCreatedEvent) event).getRowHeights();
-            this.rowMaxHeights = ((ScreenCreatedEvent) event).getRowMaxHeights();
-            this.locals = ((ScreenCreatedEvent) event).getLocals();
-            this.variableInitMapping = ((ScreenCreatedEvent) event).getVariableInitMapping();
-            this.variableInit = ((ScreenCreatedEvent) event).getVariableInit();
-            this.background = ((ScreenCreatedEvent) event).getBackground();
-            this.title = ((ScreenCreatedEvent) event).getTitle();
-        }
-
-        // Add the event to uncommitted changes
-        uncommittedChanges.add(event);
-    }
-
-    public void markChangesAsCommitted() {
-        uncommittedChanges.clear();
-    }
 
 }

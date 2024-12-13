@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.master.model.BaseEntity;
+import org.master.model.dataObject.DataObjectsWriteModel;
 import org.master.model.language.Language;
 
 import java.util.List;
@@ -39,4 +40,7 @@ public class FormVersionWriteModel extends BaseEntity {
     @JdbcTypeCode(SqlTypes.ARRAY)
     private List<Integer> rowMaxHeights;
     private Integer version;
+    @OneToOne
+    @JoinColumn(name = "dataObjectsWriteModel", referencedColumnName = "id")
+    private DataObjectsWriteModel dataObjectsWriteModel;
 }

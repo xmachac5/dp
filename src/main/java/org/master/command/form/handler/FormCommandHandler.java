@@ -11,6 +11,7 @@ import org.master.domain.dataObject.DataObjectAggregate;
 import org.master.domain.form.FormAggregate;
 import org.master.events.BaseEvent;
 import org.master.eventsourcing.EventStore;
+import org.master.model.dataObject.DataObjectsWriteModel;
 import org.master.repository.dataObject.DataObjectWriteRepository;
 import org.master.repository.form.FormWriteRepository;
 
@@ -59,16 +60,6 @@ public class FormCommandHandler {
     @Transactional
     public void handle(CreateFormWithDOCommand command) {
 
-        CreateFormCommand createFormCommand = new CreateFormCommand(
-                command.name(),
-                command.columns(),
-                command.rowHeights(),
-                command.primaryLanguageId(),
-                command.rowMaxHeights(),
-                command.columnMapping(),
-                command.definition()
-        );
-
         CreateDataObjectCommand createDataObjectCommand = new CreateDataObjectCommand(
                 command.name(),
                 "",
@@ -77,36 +68,49 @@ public class FormCommandHandler {
                 command.columnMapping()
         );
 
-        // Use factory method to create a new form aggregate
-        FormAggregate formAggregate = FormAggregate.createForm(createFormCommand);
-
         // Use factory method to create a new DO aggregate
-        DataObjectAggregate dataObjectAggregate =  DataObjectAggregate.createDataObject(createDataObjectCommand,
-                formAggregate.getId());
-
-        // Persist and publish form events
-        eventStore.saveAndPublish(formAggregate);
+        DataObjectAggregate dataObjectAggregate =  DataObjectAggregate.createDataObject(createDataObjectCommand);
 
         // Persist and publish DO events
         eventStore.saveAndPublish(dataObjectAggregate);
 
-        formWriteRepository.create(formAggregate.getId(), createFormCommand);
+        DataObjectsWriteModel dataObjectsWriteModel = dataObjectWriteRepository.create(dataObjectAggregate.getId(),
+                createDataObjectCommand, 1);
 
-        dataObjectWriteRepository.create(dataObjectAggregate.getId(), createDataObjectCommand);
+        CreateFormCommand createFormCommand = new CreateFormCommand(
+                command.name(),
+                command.columns(),
+                command.rowHeights(),
+                command.primaryLanguageId(),
+                command.rowMaxHeights(),
+                command.columnMapping(),
+                command.definition(),
+                dataObjectsWriteModel
+        );
+
+        // Use factory method to create a new form aggregate
+        FormAggregate formAggregate = FormAggregate.createForm(dataObjectAggregate.getId(), createFormCommand);
+
+        // Persist and publish form events
+        eventStore.saveAndPublish(formAggregate);
+
+        formWriteRepository.create(formAggregate.getId(), createFormCommand);
 
     }
 
     @Transactional
     public void handle(UpdateFormWithDOCommand command) {
 
-        UpdateFormCommand updateFormCommand = new UpdateFormCommand(
-                command.id(),
-                command.columns(),
-                command.rowHeights(),
-                command.primaryLanguageId(),
-                command.rowMaxHeights(),
-                command.columnMapping(),
-                command.definition()
+        FormAggregate formAggregate = rehydrateForm(command.id(), "Cannot update deleted Form");
+
+        DataObjectAggregate dataObjectAggregate = rehydrateDO(command.id(), "Cannot update deleted DO");
+
+        CreateDataObjectCommand createDataObjectCommand = new CreateDataObjectCommand(
+                formAggregate.getName(),
+                "",
+                command.trackChanges(),
+                command.softDelete(),
+                command.columnMapping()
         );
 
         UpdateDataObjectCommand updateDataObjectCommand = new UpdateDataObjectCommand(
@@ -117,11 +121,20 @@ public class FormCommandHandler {
                 command.columnMapping()
         );
 
-        FormAggregate formAggregate = rehydrateForm(command.id(), "Cannot update deleted Form");
+        Integer new_version = formWriteRepository.latestVersion(command.id()) + 1;
 
-        DataObjectAggregate dataObjectAggregate = rehydrateDO(command.id(), "Cannot update deleted DO");
+        DataObjectsWriteModel dataObjectsWriteModel = dataObjectWriteRepository.create(UUID.randomUUID(), createDataObjectCommand, new_version);
 
-
+        UpdateFormCommand updateFormCommand = new UpdateFormCommand(
+                command.id(),
+                command.columns(),
+                command.rowHeights(),
+                command.primaryLanguageId(),
+                command.rowMaxHeights(),
+                command.columnMapping(),
+                command.definition(),
+                dataObjectsWriteModel
+        );
 
         // Apply the update command
         formAggregate.updateForm(updateFormCommand);
@@ -135,8 +148,6 @@ public class FormCommandHandler {
 
         // Update the write model in the repository
         formWriteRepository.update(updateFormCommand);
-
-        dataObjectWriteRepository.update(updateDataObjectCommand);
     }
 
     @Transactional
@@ -177,9 +188,7 @@ public class FormCommandHandler {
         eventStore.saveAndPublish(dataObjectAggregate);
 
         // Update the write model in the repository
-        formWriteRepository.delete(deleteFormCommand);
-
-        dataObjectWriteRepository.delete(deleteDataObjectCommand);
+        formWriteRepository.delete(command);
     }
 
     private FormAggregate rehydrateForm(UUID uuid, String errorText){

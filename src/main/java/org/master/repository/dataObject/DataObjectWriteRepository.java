@@ -25,12 +25,12 @@ public class DataObjectWriteRepository implements PanacheRepository<DataObjectsW
     @Inject
     UserRepository userRepository;
 
-    public void create(UUID id, CreateDataObjectCommand createDataObjectCommand) {
+    public DataObjectsWriteModel create(UUID id, CreateDataObjectCommand createDataObjectCommand, Integer version) {
         DataObjectsWriteModel dataObjectsWriteModel = new DataObjectsWriteModel();
         dataObjectsWriteModel.setId(id);
         dataObjectsWriteModel.setName(createDataObjectCommand.name());
         dataObjectsWriteModel.setDescription(createDataObjectCommand.description());
-        dataObjectsWriteModel.setVersion(1);
+        dataObjectsWriteModel.setVersion(version);
         dataObjectsWriteModel.setSoftDelete(createDataObjectCommand.softDelete());
         dataObjectsWriteModel.setTrackChanges(createDataObjectCommand.trackChanges());
 
@@ -38,6 +38,8 @@ public class DataObjectWriteRepository implements PanacheRepository<DataObjectsW
 
         // Parse the columns from the JSON node and create Data entities
         createColumns(dataObjectsWriteModel, createDataObjectCommand.columns());
+
+        return dataObjectsWriteModel;
     }
 
     // Update is used just for Entities not connected with form (views so can be mutated) Entities connected from form represents real table so to keep historic data are not updated, but with each update is created new Entity

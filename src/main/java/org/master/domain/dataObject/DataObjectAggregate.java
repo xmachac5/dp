@@ -45,21 +45,6 @@ public class DataObjectAggregate extends AggregateRoot {
         return aggregate;
     }
 
-    public static DataObjectAggregate createDataObject(CreateDataObjectCommand createDataObjectCommand, UUID id) {
-        DataObjectAggregate aggregate = new DataObjectAggregate(id);
-        // Creating the DataObjectCreatedEvent with all necessary data
-        DataObjectCreatedEvent event = new DataObjectCreatedEvent(
-                id,
-                createDataObjectCommand.name(),
-                createDataObjectCommand.description(),
-                createDataObjectCommand.trackChanges(),
-                createDataObjectCommand.softDelete(),
-                createDataObjectCommand.columns()
-        );
-        aggregate.apply(event);
-        return aggregate;
-    }
-
     public void updateDataObject(UpdateDataObjectCommand updateDataObjectCommand) {
         // Creating the DataObjectUpdatedEvent with all necessary data
         DataObjectUpdatedEvent event = new DataObjectUpdatedEvent(
