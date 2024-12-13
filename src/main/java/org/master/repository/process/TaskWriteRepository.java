@@ -214,19 +214,17 @@ public class TaskWriteRepository {
         List<ScreenTaskWriteModel> ScreenTasks = findScreenTasksByProcessVersion(lastVersion);
 
         for (DOTaskWriteModel task : DOTasks) {
-            TaskWriteModel newTask = copyTaskForNewVersion(task, processVersionWriteModel);
+            TaskWriteModel newTask = copyDOTaskForNewVersion(task, processVersionWriteModel);
             em.persist(newTask); // Persist the copied task
         }
         for (ScriptTaskWriteModel task : ScriptTasks) {
-            TaskWriteModel newTask = copyTaskForNewVersion(task, processVersionWriteModel);
+            TaskWriteModel newTask = copyScriptTaskForNewVersion(task, processVersionWriteModel);
             em.persist(newTask); // Persist the copied task
         }
         for (ScreenTaskWriteModel task : ScreenTasks) {
-            TaskWriteModel newTask = copyTaskForNewVersion(task, processVersionWriteModel);
+            TaskWriteModel newTask = copyScreenTaskForNewVersion(task, processVersionWriteModel);
             em.persist(newTask); // Persist the copied task
         }
-
-
     }
 
     public TaskWriteModel findByUuid(UUID uuid, TaskType type) {
@@ -264,35 +262,37 @@ public class TaskWriteRepository {
         ).setParameter("uuid", processVersionWriteModel.getId()).getResultList();
     }
 
-    // Helper method to copy a task to the new version
-    private TaskWriteModel copyTaskForNewVersion(TaskWriteModel task, ProcessVersionWriteModel newVersion) {
-        if (task instanceof DOTaskWriteModel doTask) {
-            DOTaskWriteModel newTask = new DOTaskWriteModel();
-            newTask.setId(UUID.randomUUID());
-            newTask.setName(doTask.getName());
-            newTask.setDataObjectsWriteModel(doTask.getDataObjectsWriteModel());
-            newTask.setColumnsMapping(doTask.getColumnsMapping());
-            newTask.setVariableMapping(doTask.getVariableMapping());
-            newTask.setProcessVersionWriteModel(newVersion);
-            return newTask;
-        } else if (task instanceof ScreenTaskWriteModel screenTask) {
-            ScreenTaskWriteModel newTask = new ScreenTaskWriteModel();
-            newTask.setId(UUID.randomUUID());
-            newTask.setName(screenTask.getName());
-            newTask.setScreenWriteModel(screenTask.getScreenWriteModel());
-            newTask.setVariableMapping(screenTask.getVariableMapping());
-            newTask.setProcessVersionWriteModel(newVersion);
-            return newTask;
-        } else if (task instanceof ScriptTaskWriteModel scriptTask) {
-            ScriptTaskWriteModel newTask = new ScriptTaskWriteModel();
-            newTask.setId(UUID.randomUUID());
-            newTask.setName(scriptTask.getName());
-            newTask.setScriptWriteModel(scriptTask.getScriptWriteModel());
-            newTask.setVariableMapping(scriptTask.getVariableMapping());
-            newTask.setProcessVersionWriteModel(newVersion);
-            return newTask;
-        } else {
-            throw new IllegalArgumentException("Unknown task type: " + task.getClass().getSimpleName());
-        }
+    // Method to copy a DOTaskWriteModel
+    private DOTaskWriteModel copyDOTaskForNewVersion(DOTaskWriteModel doTask, ProcessVersionWriteModel newVersion) {
+        DOTaskWriteModel newTask = new DOTaskWriteModel();
+        newTask.setId(UUID.randomUUID());
+        newTask.setName(doTask.getName());
+        newTask.setDataObjectsWriteModel(doTask.getDataObjectsWriteModel());
+        newTask.setColumnsMapping(doTask.getColumnsMapping());
+        newTask.setVariableMapping(doTask.getVariableMapping());
+        newTask.setProcessVersionWriteModel(newVersion);
+        return newTask;
+    }
+
+    // Method to copy a ScreenTaskWriteModel
+    private ScreenTaskWriteModel copyScreenTaskForNewVersion(ScreenTaskWriteModel screenTask, ProcessVersionWriteModel newVersion) {
+        ScreenTaskWriteModel newTask = new ScreenTaskWriteModel();
+        newTask.setId(UUID.randomUUID());
+        newTask.setName(screenTask.getName());
+        newTask.setScreenWriteModel(screenTask.getScreenWriteModel());
+        newTask.setVariableMapping(screenTask.getVariableMapping());
+        newTask.setProcessVersionWriteModel(newVersion);
+        return newTask;
+    }
+
+    // Method to copy a ScriptTaskWriteModel
+    private ScriptTaskWriteModel copyScriptTaskForNewVersion(ScriptTaskWriteModel scriptTask, ProcessVersionWriteModel newVersion) {
+        ScriptTaskWriteModel newTask = new ScriptTaskWriteModel();
+        newTask.setId(UUID.randomUUID());
+        newTask.setName(scriptTask.getName());
+        newTask.setScriptWriteModel(scriptTask.getScriptWriteModel());
+        newTask.setVariableMapping(scriptTask.getVariableMapping());
+        newTask.setProcessVersionWriteModel(newVersion);
+        return newTask;
     }
 }
