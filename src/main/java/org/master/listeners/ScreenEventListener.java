@@ -8,6 +8,7 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.master.events.BaseEvent;
 import org.master.events.screen.ScreenCreatedEvent;
 import org.master.events.screen.ScreenDeletedEvent;
+import org.master.events.screen.ScreenPublishedEvent;
 import org.master.events.screen.ScreenUpdatedEvent;
 import org.master.repository.screen.ScreenReadRepository;
 
@@ -28,6 +29,8 @@ public class ScreenEventListener {
             handle((ScreenUpdatedEvent) event);
         } else if (event instanceof ScreenDeletedEvent) {
             handle((ScreenDeletedEvent) event);
+        } else if (event instanceof ScreenPublishedEvent) {
+            handle((ScreenPublishedEvent) event);
         }
     }
 
@@ -36,10 +39,13 @@ public class ScreenEventListener {
     }
 
     private void handle(ScreenUpdatedEvent event) {
-        readRepository.update(event);
     }
 
     private void handle(ScreenDeletedEvent event) {
         readRepository.delete(event);
+    }
+
+    private void handle(ScreenPublishedEvent event) {
+        readRepository.update(event);
     }
 }

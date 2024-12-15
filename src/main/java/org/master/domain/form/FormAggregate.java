@@ -5,11 +5,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.master.command.form.commands.CreateFormCommand;
 import org.master.command.form.commands.DeleteFormCommand;
+import org.master.command.form.commands.PublishFormCommand;
 import org.master.command.form.commands.UpdateFormCommand;
 import org.master.domain.AggregateRoot;
 import org.master.events.BaseEvent;
 import org.master.events.form.FormCreatedEvent;
 import org.master.events.form.FormDeletedEvent;
+import org.master.events.form.FormPublishedEvent;
 import org.master.events.form.FormUpdatedEvent;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class FormAggregate extends AggregateRoot {
     private List<Integer> rowMaxHeights;
     private JsonNode columnMapping;
     private JsonNode definition;
+    private UUID dataObjectUUID;
 
     public FormAggregate(UUID id) {
         super(id);
@@ -64,6 +67,7 @@ public class FormAggregate extends AggregateRoot {
                 createFormCommand.columnMapping(),
                 createFormCommand.definition()
         );
+        aggregate.dataObjectUUID = createFormCommand.dataObjectsWriteModel().getId();
         aggregate.apply(event);
         return aggregate;
     }
@@ -78,6 +82,21 @@ public class FormAggregate extends AggregateRoot {
                 updateFormCommand.rowMaxHeights(),
                 updateFormCommand.columnMapping(),
                 updateFormCommand.definition()
+        );
+        this.dataObjectUUID = updateFormCommand.dataObjectsWriteModel().getId();
+        this.apply(event);
+    }
+
+    public void publishForm(PublishFormCommand publishFormCommand) {
+        // Creating the FormPublishedEvent with all necessary data
+        FormPublishedEvent event = new FormPublishedEvent(
+                publishFormCommand.id(),
+                this.getColumns(),
+                this.getRowHeights(),
+                this.getPrimaryLanguageId(),
+                this.getRowMaxHeights(),
+                this.getColumnMapping(),
+                this.getDefinition()
         );
         this.apply(event);
     }

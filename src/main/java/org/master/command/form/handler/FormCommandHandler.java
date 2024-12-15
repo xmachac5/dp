@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.master.command.dataObject.commands.CreateDataObjectCommand;
 import org.master.command.dataObject.commands.DeleteDataObjectCommand;
+import org.master.command.dataObject.commands.PublishDataObjectCommand;
 import org.master.command.dataObject.commands.UpdateDataObjectCommand;
 import org.master.command.form.commands.*;
 import org.master.domain.dataObject.DataObjectAggregate;
@@ -47,6 +48,10 @@ public class FormCommandHandler {
 
         FormAggregate aggregate = rehydrateForm(command.id(), "Cannot update deleted Form");
 
+        if (aggregate.getDataObjectUUID() != null){
+            throw new IllegalArgumentException("Cannot update Form with DO with this endpoint");
+        }
+
         // Apply the update command
         aggregate.updateForm(command);
 
@@ -58,6 +63,23 @@ public class FormCommandHandler {
     }
 
     @Transactional
+    public void handle(PublishFormCommand command) {
+
+        FormAggregate aggregate = rehydrateForm(command.id(), "Cannot update deleted Form");
+
+        if (aggregate.getDataObjectUUID() != null){
+            throw new IllegalArgumentException("Cannot publish Form with DO with this endpoint");
+        }
+
+        // Apply the update command
+        aggregate.publishForm(command);
+
+        // Persist and publish events
+        eventStore.saveAndPublish(aggregate);
+
+    }
+
+    @Transactional
     public void handle(CreateFormWithDOCommand command) {
 
         CreateDataObjectCommand createDataObjectCommand = new CreateDataObjectCommand(
@@ -65,7 +87,8 @@ public class FormCommandHandler {
                 "",
                 command.trackChanges(),
                 command.softDelete(),
-                command.columnMapping()
+                command.columnMapping(),
+                true
         );
 
         // Use factory method to create a new DO aggregate
@@ -103,6 +126,10 @@ public class FormCommandHandler {
 
         FormAggregate formAggregate = rehydrateForm(command.id(), "Cannot update deleted Form");
 
+        if (formAggregate.getDataObjectUUID() == null){
+            throw new IllegalArgumentException("Cannot update Form without DO with this endpoint");
+        }
+
         DataObjectAggregate dataObjectAggregate = rehydrateDO(command.id(), "Cannot update deleted DO");
 
         CreateDataObjectCommand createDataObjectCommand = new CreateDataObjectCommand(
@@ -110,7 +137,8 @@ public class FormCommandHandler {
                 "",
                 command.trackChanges(),
                 command.softDelete(),
-                command.columnMapping()
+                command.columnMapping(),
+                true
         );
 
         UpdateDataObjectCommand updateDataObjectCommand = new UpdateDataObjectCommand(
@@ -151,9 +179,39 @@ public class FormCommandHandler {
     }
 
     @Transactional
+    public void handle(PublishFormWithDOCommand command) {
+
+        FormAggregate formAggregate = rehydrateForm(command.id(), "Cannot publish deleted Form");
+
+        if (formAggregate.getDataObjectUUID() == null){
+            throw new IllegalArgumentException("Cannot publish Form without DO with this endpoint");
+        }
+
+        DataObjectAggregate dataObjectAggregate = rehydrateDO(command.id(), "Cannot publish deleted DO");
+
+        PublishDataObjectCommand publishDataObjectCommand = new PublishDataObjectCommand(command.id());
+
+        PublishFormCommand publishFormCommand = new PublishFormCommand(command.id());
+
+        // Apply the update command
+        formAggregate.publishForm(publishFormCommand);
+
+        dataObjectAggregate.publishDataObject(publishDataObjectCommand);
+
+        // Persist and publish events
+        eventStore.saveAndPublish(formAggregate);
+
+        eventStore.saveAndPublish(dataObjectAggregate);
+    }
+
+    @Transactional
     public void handle(DeleteFormCommand command) {
 
         FormAggregate aggregate = rehydrateForm(command.uuid(), "Cannot delete deleted Form Handler");
+
+        if (aggregate.getDataObjectUUID() != null){
+            throw new IllegalArgumentException("Cannot delete Form with DO with this endpoint");
+        }
 
         // Apply the update command
         aggregate.deleteForm(command);
@@ -174,6 +232,10 @@ public class FormCommandHandler {
         DeleteFormCommand deleteFormCommand = new DeleteFormCommand(command.uuid());
 
         FormAggregate formAggregate = rehydrateForm(command.uuid(), "Cannot delete deleted Form Handler");
+
+        if (formAggregate.getDataObjectUUID() == null){
+            throw new IllegalArgumentException("Cannot delete Form without DO with this endpoint");
+        }
 
         DataObjectAggregate dataObjectAggregate = rehydrateDO(command.uuid(), "Cannot delete deleted DO Handler");
 

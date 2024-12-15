@@ -8,6 +8,7 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.master.events.BaseEvent;
 import org.master.events.script.ScriptCreatedEvent;
 import org.master.events.script.ScriptDeletedEvent;
+import org.master.events.script.ScriptPublishedEvent;
 import org.master.events.script.ScriptUpdatedEvent;
 import org.master.repository.script.ScriptReadRepository;
 
@@ -27,6 +28,8 @@ public class ScriptEventListener {
             handle((ScriptUpdatedEvent) event);
         } else if (event instanceof ScriptDeletedEvent) {
             handle((ScriptDeletedEvent) event);
+        } else if (event instanceof ScriptPublishedEvent) {
+            handle((ScriptPublishedEvent) event);
         }
     }
 
@@ -35,10 +38,13 @@ public class ScriptEventListener {
     }
 
     private void handle(ScriptUpdatedEvent event) {
-        readRepository.update(event);
     }
 
     private void handle(ScriptDeletedEvent event) {
         readRepository.delete(event);
+    }
+
+    private void handle(ScriptPublishedEvent event) {
+        readRepository.update(event);
     }
 }

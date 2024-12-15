@@ -5,11 +5,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.master.command.screen.commands.CreateScreenCommand;
 import org.master.command.screen.commands.DeleteScreenCommand;
+import org.master.command.screen.commands.PublishScreenCommands;
 import org.master.command.screen.commands.UpdateScreenCommand;
 import org.master.domain.AggregateRoot;
 import org.master.events.BaseEvent;
 import org.master.events.screen.ScreenCreatedEvent;
 import org.master.events.screen.ScreenDeletedEvent;
+import org.master.events.screen.ScreenPublishedEvent;
 import org.master.events.screen.ScreenUpdatedEvent;
 
 import java.util.List;
@@ -67,6 +69,14 @@ public class ScreenAggregate extends AggregateRoot {
                 updateScreenCommand.url(), updateScreenCommand.rowMaxHeights(), updateScreenCommand.locals(),
                 updateScreenCommand.variableInit(), updateScreenCommand.variableInitMapping(), updateScreenCommand.background(),
                 updateScreenCommand.title());
+        this.apply(event);
+    }
+
+    public void publishScreen(PublishScreenCommands publishScreenCommands) {
+        // Creating the ScreenPublishedEvent with all necessary data
+        ScreenPublishedEvent event = new ScreenPublishedEvent(publishScreenCommands.id(), this.getName(), this.getData(),
+                this.getColumns(), this.getRowHeights(), this.getPrimaryLanguageId(), this.getUrl(), this.getRowMaxHeights(),
+                this.getLocals(), this.getVariableInit(), this.getVariableInitMapping(), this.getBackground(), this.getTitle());
         this.apply(event);
     }
 

@@ -7,7 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import org.master.events.script.ScriptCreatedEvent;
 import org.master.events.script.ScriptDeletedEvent;
-import org.master.events.script.ScriptUpdatedEvent;
+import org.master.events.script.ScriptPublishedEvent;
 import org.master.model.screen.ScreenReadModel;
 import org.master.model.script.ScriptReadModel;
 
@@ -23,9 +23,9 @@ public class ScriptReadRepository implements PanacheRepository<ScreenReadModel> 
         em.persist(scriptReadModel);
     }
 
-    public void update(ScriptUpdatedEvent scriptUpdatedEvent ) {
-        ScriptReadModel scriptReadModel = em.find(ScriptReadModel.class, scriptUpdatedEvent.getId());
-        scriptReadModel.setStructure(((ObjectNode)scriptUpdatedEvent.getVariables()).put("code", scriptUpdatedEvent.getCode()));
+    public void update(ScriptPublishedEvent scriptPublishedEvent ) {
+        ScriptReadModel scriptReadModel = em.find(ScriptReadModel.class, scriptPublishedEvent.getId());
+        scriptReadModel.setStructure(((ObjectNode)scriptPublishedEvent.getVariables()).put("code", scriptPublishedEvent.getCode()));
 
         em.merge(scriptReadModel);
     }

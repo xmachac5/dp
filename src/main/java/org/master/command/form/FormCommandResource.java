@@ -67,6 +67,22 @@ public class FormCommandResource {
         }
     }
 
+    @Operation(summary = "Publish form", description = "Publish form with the provided data")
+    @PUT
+    @Path("/publish")
+    @RolesAllowed("admin")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response publishForm(@QueryParam("form id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id){
+        try {
+            formCommandHandler.handle(new PublishFormCommand(id));
+            return Response.status(Response.Status.OK).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (IllegalStateException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
     @Operation(summary = "Create a new form with data object", description = "Creates a form and data object with the provided data")
     @POST
     @Path("/do")
@@ -106,6 +122,22 @@ public class FormCommandResource {
                     formUpdateWithDODTO.getTrackChanges(),
                     formUpdateWithDODTO.getSoftDelete()
             ));
+            return Response.status(Response.Status.OK).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (IllegalStateException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @Operation(summary = "Publish form with DO", description = "Publish form with DO with the provided data")
+    @PUT
+    @Path("/do/publish")
+    @RolesAllowed("admin")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response publishFormWithDO(@QueryParam("form id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id){
+        try {
+            formCommandHandler.handle(new PublishFormWithDOCommand(id));
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();

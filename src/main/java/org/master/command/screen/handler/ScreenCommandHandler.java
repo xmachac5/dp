@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.master.command.screen.commands.CreateScreenCommand;
 import org.master.command.screen.commands.DeleteScreenCommand;
+import org.master.command.screen.commands.PublishScreenCommands;
 import org.master.command.screen.commands.UpdateScreenCommand;
 import org.master.domain.screen.ScreenAggregate;
 import org.master.events.BaseEvent;
@@ -49,6 +50,18 @@ public class ScreenCommandHandler {
 
         // Update the write model in the repository
         screenWriteRepository.update(command);
+    }
+
+    @Transactional
+    public void handle(PublishScreenCommands command) {
+
+        ScreenAggregate aggregate = rehydrate(command.id(), "Cannot update deleted Screen");
+
+        // Apply the update command
+        aggregate.publishScreen(command);
+
+        // Persist and publish events
+        eventStore.saveAndPublish(aggregate);
     }
 
     @Transactional

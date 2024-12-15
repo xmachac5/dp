@@ -5,11 +5,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.master.command.script.commands.CreateScriptCommand;
 import org.master.command.script.commands.DeleteScriptCommand;
+import org.master.command.script.commands.PublishScriptCommand;
 import org.master.command.script.commands.UpdateScriptCommand;
 import org.master.domain.AggregateRoot;
 import org.master.events.BaseEvent;
 import org.master.events.script.ScriptCreatedEvent;
 import org.master.events.script.ScriptDeletedEvent;
+import org.master.events.script.ScriptPublishedEvent;
 import org.master.events.script.ScriptUpdatedEvent;
 
 import java.util.UUID;
@@ -45,6 +47,12 @@ public class ScriptAggregate extends AggregateRoot {
         // Creating the ScriptUpdatedEvent with all necessary data
         ScriptUpdatedEvent event = new ScriptUpdatedEvent(updateScriptCommand.id(), updateScriptCommand.name(),
                 updateScriptCommand.variables(), updateScriptCommand.code());
+        this.apply(event);
+    }
+
+    public void publishScript(PublishScriptCommand publishScriptCommand) {
+        ScriptPublishedEvent event = new ScriptPublishedEvent(publishScriptCommand.id(), this.getName(), this.getVariables(),
+                this.getCode());
         this.apply(event);
     }
 

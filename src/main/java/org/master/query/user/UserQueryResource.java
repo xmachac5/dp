@@ -45,7 +45,6 @@ public class UserQueryResource {
 
     @GET
     @Path("/list")
-    @RolesAllowed("admin")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserList() {
         List<UserListDTO> users = userQueryHandler.getUserList();

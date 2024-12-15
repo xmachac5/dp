@@ -1,6 +1,5 @@
 package org.master.query.language;
 
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -33,7 +32,6 @@ public class LanguageQueryResource {
 
     @GET
     @Path("/list")
-    @RolesAllowed("admin")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLanguageList() {
         List<LanguageListDTO> languages = languageQueryHandler.getLanguageList();

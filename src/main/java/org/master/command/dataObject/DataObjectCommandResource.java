@@ -10,6 +10,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.master.command.dataObject.commands.CreateDataObjectCommand;
 import org.master.command.dataObject.commands.DeleteDataObjectCommand;
+import org.master.command.dataObject.commands.PublishDataObjectCommand;
 import org.master.command.dataObject.commands.UpdateDataObjectCommand;
 import org.master.command.dataObject.handler.DataObjectCommandHandler;
 import org.master.dto.dataObject.DataObjectCreateDTO;
@@ -35,7 +36,8 @@ public class DataObjectCommandResource {
                     dataObjectCreateDTO.getDescription(),
                     dataObjectCreateDTO.getTrackChanges(),
                     dataObjectCreateDTO.getSoftDelete(),
-                    dataObjectCreateDTO.getColumns()
+                    dataObjectCreateDTO.getColumns(),
+                    false
             ));
             return Response.status(Response.Status.CREATED).build();
         }
@@ -73,6 +75,22 @@ public class DataObjectCommandResource {
     public Response deleteScreen(@QueryParam("data object id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id){
         try {
             dataObjectCommandHandler.handle(new DeleteDataObjectCommand(id));
+            return Response.status(Response.Status.OK).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (IllegalStateException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @Operation(summary = "Publish data object", description = "Publish data object with the provided data")
+    @PUT
+    @Path("/publish")
+    @RolesAllowed("admin")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response publishDataObject(@QueryParam("data object id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id){
+        try {
+            dataObjectCommandHandler.handle(new PublishDataObjectCommand(id));
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();

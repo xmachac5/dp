@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.master.command.script.commands.CreateScriptCommand;
 import org.master.command.script.commands.DeleteScriptCommand;
+import org.master.command.script.commands.PublishScriptCommand;
 import org.master.command.script.commands.UpdateScriptCommand;
 import org.master.domain.script.ScriptAggregate;
 import org.master.events.BaseEvent;
@@ -49,6 +50,18 @@ public class ScriptCommandHandler {
 
         // Update the write model in the repository
         scriptWriteRepository.update(command);
+    }
+
+    @Transactional
+    public void handle(PublishScriptCommand command) {
+
+        ScriptAggregate aggregate = rehydrate(command.id(), "Cannot update deleted Script");
+
+        // Apply the update command
+        aggregate.publishScript(command);
+
+        // Persist and publish events
+        eventStore.saveAndPublish(aggregate);
     }
 
     @Transactional

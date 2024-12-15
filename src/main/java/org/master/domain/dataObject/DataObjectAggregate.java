@@ -5,11 +5,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.master.command.dataObject.commands.CreateDataObjectCommand;
 import org.master.command.dataObject.commands.DeleteDataObjectCommand;
+import org.master.command.dataObject.commands.PublishDataObjectCommand;
 import org.master.command.dataObject.commands.UpdateDataObjectCommand;
 import org.master.domain.AggregateRoot;
 import org.master.events.BaseEvent;
 import org.master.events.dataObject.DataObjectCreatedEvent;
 import org.master.events.dataObject.DataObjectDeletedEvent;
+import org.master.events.dataObject.DataObjectPublishedEvent;
 import org.master.events.dataObject.DataObjectUpdatedEvent;
 
 import java.util.UUID;
@@ -23,6 +25,7 @@ public class DataObjectAggregate extends AggregateRoot {
     private Boolean trackChanges;
     private Boolean softDelete;
     private JsonNode columns;
+    private Boolean hasForm;
 
     public DataObjectAggregate(UUID id) {
         super(id);
@@ -42,6 +45,7 @@ public class DataObjectAggregate extends AggregateRoot {
                 createDataObjectCommand.columns()
         );
         aggregate.apply(event);
+        aggregate.hasForm = createDataObjectCommand.hasForm();
         return aggregate;
     }
 
@@ -53,6 +57,18 @@ public class DataObjectAggregate extends AggregateRoot {
                 updateDataObjectCommand.trackChanges(),
                 updateDataObjectCommand.softDelete(),
                 updateDataObjectCommand.columns()
+        );
+        this.apply(event);
+    }
+
+    public void publishDataObject(PublishDataObjectCommand publishDataObjectCommand) {
+        // Creating the DataObjectUpdatedEvent with all necessary data
+        DataObjectPublishedEvent event = new DataObjectPublishedEvent(
+                publishDataObjectCommand.id(),
+                this.getDescription(),
+                this.getTrackChanges(),
+                this.getSoftDelete(),
+                this.getColumns()
         );
         this.apply(event);
     }

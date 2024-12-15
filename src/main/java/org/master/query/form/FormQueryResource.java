@@ -1,6 +1,5 @@
 package org.master.query.form;
 
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -34,7 +33,6 @@ public class FormQueryResource {
 
     @GET
     @Path("/list")
-    @RolesAllowed("admin")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFormList() {
         List<FormListDTO> forms = formQueryHandler.getFormList();

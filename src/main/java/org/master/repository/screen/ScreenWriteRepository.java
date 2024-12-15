@@ -68,19 +68,19 @@ public class ScreenWriteRepository implements PanacheRepository<ScreenWriteModel
     }
 
     private void setScreenData(ScreenWriteModel screenWriteModel, JsonNode data, String name, Integer columns,
-                               List<Integer> integers, UUID uuid, String url, List<Integer> integers2,
-                               JsonNode locals, JsonNode jsonNode, JsonNode jsonNode2, JsonNode background,
+                               List<Integer> rowHeights, UUID languageUuid, String url, List<Integer> rowMaxHeights,
+                               JsonNode locals, JsonNode variableInit, JsonNode variableInitMapping, JsonNode background,
                                String title) {
         screenWriteModel.setData(data);
         screenWriteModel.setName(name);
         screenWriteModel.setColumns(columns);
-        screenWriteModel.setRowHeights(integers);
-        screenWriteModel.setPrimaryLanguage(languageRepository.findByUuid(uuid));
+        screenWriteModel.setRowHeights(rowHeights);
+        screenWriteModel.setPrimaryLanguage(languageRepository.findByUuid(languageUuid));
         screenWriteModel.setUrl(url);
-        screenWriteModel.setRowMaxHeights(integers2);
+        screenWriteModel.setRowMaxHeights(rowMaxHeights);
         screenWriteModel.setLocals(locals);
-        screenWriteModel.setVariableInit(jsonNode);
-        screenWriteModel.setVariableInitMapping(jsonNode2);
+        screenWriteModel.setVariableInit(variableInit);
+        screenWriteModel.setVariableInitMapping(variableInitMapping);
         screenWriteModel.setBackground(background);
         screenWriteModel.setTitle(title);
     }

@@ -10,6 +10,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.master.command.script.commands.CreateScriptCommand;
 import org.master.command.script.commands.DeleteScriptCommand;
+import org.master.command.script.commands.PublishScriptCommand;
 import org.master.command.script.commands.UpdateScriptCommand;
 import org.master.command.script.handler.ScriptCommandHandler;
 import org.master.dto.script.ScriptCreateDTO;
@@ -58,6 +59,22 @@ public class ScriptCommandResource {
     public Response deleteScript(@QueryParam("script id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id){
         try{
             scriptCommandHandler.handle(new DeleteScriptCommand(id));
+            return Response.status(Response.Status.OK).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (IllegalStateException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @Operation(summary = "Publish script", description = "Publish script with the provided data")
+    @PUT
+    @Path("/publish")
+    @RolesAllowed("admin")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response publishScript(@QueryParam("script id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id){
+        try {
+            scriptCommandHandler.handle(new PublishScriptCommand(id));
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();

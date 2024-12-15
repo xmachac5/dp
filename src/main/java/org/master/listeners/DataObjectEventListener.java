@@ -8,6 +8,7 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.master.events.BaseEvent;
 import org.master.events.dataObject.DataObjectCreatedEvent;
 import org.master.events.dataObject.DataObjectDeletedEvent;
+import org.master.events.dataObject.DataObjectPublishedEvent;
 import org.master.events.dataObject.DataObjectUpdatedEvent;
 import org.master.repository.dataObject.DataObjectReadRepository;
 
@@ -26,6 +27,8 @@ public class DataObjectEventListener {
             handle((DataObjectUpdatedEvent) event);
         } else if (event instanceof DataObjectDeletedEvent) {
             handle((DataObjectDeletedEvent) event);
+        } else if (event instanceof DataObjectPublishedEvent) {
+            handle((DataObjectPublishedEvent) event);
         }
     }
 
@@ -34,10 +37,13 @@ public class DataObjectEventListener {
     }
 
     private void handle(DataObjectUpdatedEvent event) {
-        dataObjectReadRepository.update(event);
     }
 
     private void handle(DataObjectDeletedEvent event) {
         dataObjectReadRepository.delete(event);
+    }
+
+    private void handle(DataObjectPublishedEvent event) {
+        dataObjectReadRepository.update(event);
     }
 }

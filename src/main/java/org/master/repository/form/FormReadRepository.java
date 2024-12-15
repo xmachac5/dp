@@ -7,7 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import org.master.events.form.FormCreatedEvent;
 import org.master.events.form.FormDeletedEvent;
-import org.master.events.form.FormUpdatedEvent;
+import org.master.events.form.FormPublishedEvent;
 import org.master.model.form.FormReadModel;
 import org.master.repository.language.LanguageRepository;
 
@@ -32,11 +32,11 @@ public class FormReadRepository implements PanacheRepository<FormReadModel> {
         em.persist(formReadModel);
     }
 
-    public void update(FormUpdatedEvent formUpdatedEvent ) {
-        FormReadModel formReadModel = em.find(FormReadModel.class, formUpdatedEvent.getId());
-        setFormData(formReadModel, formUpdatedEvent.getDefinition(), formUpdatedEvent.getColumns(),
-                formUpdatedEvent.getRowHeights(), formUpdatedEvent.getPrimaryLanguageId(), formUpdatedEvent.getRowMaxHeights(),
-                formUpdatedEvent.getColumnMapping());
+    public void update(FormPublishedEvent formPublishedEvent ) {
+        FormReadModel formReadModel = em.find(FormReadModel.class, formPublishedEvent.getId());
+        setFormData(formReadModel, formPublishedEvent.getDefinition(), formPublishedEvent.getColumns(),
+                formPublishedEvent.getRowHeights(), formPublishedEvent.getPrimaryLanguageId(), formPublishedEvent.getRowMaxHeights(),
+                formPublishedEvent.getColumnMapping());
 
         em.merge(formReadModel);
     }

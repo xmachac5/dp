@@ -8,6 +8,7 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.master.events.BaseEvent;
 import org.master.events.form.FormCreatedEvent;
 import org.master.events.form.FormDeletedEvent;
+import org.master.events.form.FormPublishedEvent;
 import org.master.events.form.FormUpdatedEvent;
 import org.master.repository.form.FormReadRepository;
 
@@ -26,6 +27,8 @@ public class FormEventListener {
             handle((FormUpdatedEvent) event);
         } else if (event instanceof FormDeletedEvent) {
             handle((FormDeletedEvent) event);
+        } else if (event instanceof FormPublishedEvent) {
+            handle((FormPublishedEvent) event);
         }
     }
 
@@ -34,10 +37,13 @@ public class FormEventListener {
     }
 
     private void handle(FormUpdatedEvent event) {
-        formReadRepository.update(event);
     }
 
     private void handle(FormDeletedEvent event) {
         formReadRepository.delete(event);
+    }
+
+    private void handle(FormPublishedEvent event) {
+        formReadRepository.update(event);
     }
 }

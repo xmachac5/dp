@@ -6,7 +6,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import org.master.events.dataObject.DataObjectCreatedEvent;
 import org.master.events.dataObject.DataObjectDeletedEvent;
-import org.master.events.dataObject.DataObjectUpdatedEvent;
+import org.master.events.dataObject.DataObjectPublishedEvent;
 import org.master.model.dataObject.DataObjectsReadModel;
 
 @ApplicationScoped
@@ -21,9 +21,9 @@ public class DataObjectReadRepository implements PanacheRepository<DataObjectsRe
         em.persist(dataObjectsReadModel);
     }
 
-    public void update(DataObjectUpdatedEvent dataObjectUpdatedEvent ) {
-        DataObjectsReadModel dataObjectsReadModel = em.find(DataObjectsReadModel.class, dataObjectUpdatedEvent.getId());
-        dataObjectsReadModel.setColumns(dataObjectUpdatedEvent.getColumns());
+    public void update(DataObjectPublishedEvent dataObjectPublishedEvent ) {
+        DataObjectsReadModel dataObjectsReadModel = em.find(DataObjectsReadModel.class, dataObjectPublishedEvent.getId());
+        dataObjectsReadModel.setColumns(dataObjectPublishedEvent.getColumns());
 
         em.merge(dataObjectsReadModel);
     }

@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.master.command.dataObject.commands.CreateDataObjectCommand;
 import org.master.command.dataObject.commands.DeleteDataObjectCommand;
+import org.master.command.dataObject.commands.PublishDataObjectCommand;
 import org.master.command.dataObject.commands.UpdateDataObjectCommand;
 import org.master.domain.dataObject.DataObjectAggregate;
 import org.master.events.BaseEvent;
@@ -49,6 +50,19 @@ public class DataObjectCommandHandler {
 
         // Update the write model in the repository
         dataObjectWriteRepository.update(command);
+
+    }
+
+    @Transactional
+    public void handle(PublishDataObjectCommand command) {
+
+        DataObjectAggregate aggregate = rehydrate(command.id(), "Cannot update deleted DataObject");
+
+        // Apply the update command
+        aggregate.publishDataObject(command);
+
+        // Persist and publish events
+        eventStore.saveAndPublish(aggregate);
 
     }
 

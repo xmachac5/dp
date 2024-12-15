@@ -7,7 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import org.master.events.screen.ScreenCreatedEvent;
 import org.master.events.screen.ScreenDeletedEvent;
-import org.master.events.screen.ScreenUpdatedEvent;
+import org.master.events.screen.ScreenPublishedEvent;
 import org.master.model.screen.ScreenReadModel;
 import org.master.repository.language.LanguageRepository;
 
@@ -33,13 +33,13 @@ public class ScreenReadRepository implements PanacheRepository<ScreenReadModel> 
         em.persist(screenReadModel);
     }
 
-    public void update(ScreenUpdatedEvent screenUpdatedEvent ) {
-        ScreenReadModel screenReadModel = em.find(ScreenReadModel.class, screenUpdatedEvent.getId());
-        setScreenData(screenReadModel, screenUpdatedEvent.getData(),
-                screenUpdatedEvent.getColumns(), screenUpdatedEvent.getRowHeights(), screenUpdatedEvent.getPrimaryLanguageId(),
-                screenUpdatedEvent.getUrl(), screenUpdatedEvent.getRowMaxHeights(), screenUpdatedEvent.getLocals(),
-                screenUpdatedEvent.getVariableInit(), screenUpdatedEvent.getVariableInitMapping(),
-                screenUpdatedEvent.getBackground(), screenUpdatedEvent.getTitle());
+    public void update(ScreenPublishedEvent screenPublishedEvent ) {
+        ScreenReadModel screenReadModel = em.find(ScreenReadModel.class, screenPublishedEvent.getId());
+        setScreenData(screenReadModel, screenPublishedEvent.getData(),
+                screenPublishedEvent.getColumns(), screenPublishedEvent.getRowHeights(), screenPublishedEvent.getPrimaryLanguageId(),
+                screenPublishedEvent.getUrl(), screenPublishedEvent.getRowMaxHeights(), screenPublishedEvent.getLocals(),
+                screenPublishedEvent.getVariableInit(), screenPublishedEvent.getVariableInitMapping(),
+                screenPublishedEvent.getBackground(), screenPublishedEvent.getTitle());
 
         em.merge(screenReadModel);
     }

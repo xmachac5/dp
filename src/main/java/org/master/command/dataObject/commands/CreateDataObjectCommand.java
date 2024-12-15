@@ -12,5 +12,6 @@ public record CreateDataObjectCommand (
     String description,
     Boolean trackChanges,
     Boolean softDelete,
-    @NotNull JsonNode columns
+    @NotNull JsonNode columns,
+    @NotNull Boolean hasForm
 ){}

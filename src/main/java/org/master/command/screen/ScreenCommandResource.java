@@ -10,6 +10,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.master.command.screen.commands.CreateScreenCommand;
 import org.master.command.screen.commands.DeleteScreenCommand;
+import org.master.command.screen.commands.PublishScreenCommands;
 import org.master.command.screen.commands.UpdateScreenCommand;
 import org.master.command.screen.handler.ScreenCommandHandler;
 import org.master.dto.screen.ScreenCreateDTO;
@@ -62,6 +63,22 @@ public class ScreenCommandResource {
     public Response deleteScreen(@QueryParam("screen id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id){
         try {
             screenCommandHandler.handle(new DeleteScreenCommand(id));
+            return Response.status(Response.Status.OK).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (IllegalStateException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @Operation(summary = "Publish screen", description = "Publish screen with the provided data")
+    @PUT
+    @Path("/publish")
+    @RolesAllowed("admin")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response publishScreen(@QueryParam("screen id") @DefaultValue("beb7e03a-be7f-441d-b562-865f8fdc3aa9") UUID id){
+        try {
+            screenCommandHandler.handle(new PublishScreenCommands(id));
             return Response.status(Response.Status.OK).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
