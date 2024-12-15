@@ -3,9 +3,6 @@ package org.master.events.form;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,6 +21,7 @@ public class FormCreatedEvent extends BaseEvent {
     private List<Integer> rowMaxHeights;
     private JsonNode columnMapping;
     private JsonNode definition;
+    private UUID dataObjectUUID;
 
     @Builder
     @JsonCreator
@@ -35,7 +33,8 @@ public class FormCreatedEvent extends BaseEvent {
             @JsonProperty("primaryLanguageId") UUID primaryLanguageId,
             @JsonProperty("rowMaxHeights") List<Integer> rowMaxHeights,
             @JsonProperty("columnMapping") JsonNode columnMapping,
-            @JsonProperty("definition") JsonNode definition
+            @JsonProperty("definition") JsonNode definition,
+            @JsonProperty("dataObjectUUID") UUID dataObjectUUID
     ) {
         super(id);
         this.name = name;
@@ -45,5 +44,6 @@ public class FormCreatedEvent extends BaseEvent {
         this.rowMaxHeights = rowMaxHeights;
         this.columnMapping = columnMapping;
         this.definition = definition;
+        this.dataObjectUUID = dataObjectUUID;
     }
 }

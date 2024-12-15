@@ -20,6 +20,7 @@ public class FormUpdatedEvent extends BaseEvent {
     private List<Integer> rowMaxHeights;
     private JsonNode columnMapping;
     private JsonNode definition;
+    private UUID dataObjectUUID;
 
     @Builder
     @JsonCreator
@@ -30,7 +31,8 @@ public class FormUpdatedEvent extends BaseEvent {
             @JsonProperty("primaryLanguageId") UUID primaryLanguageId,
             @JsonProperty("rowMaxHeights") List<Integer> rowMaxHeights,
             @JsonProperty("columnMapping") JsonNode columnMapping,
-            @JsonProperty("definition") JsonNode definition
+            @JsonProperty("definition") JsonNode definition,
+            @JsonProperty("dataObjectUUID") UUID dataObjectUUID
     ) {
         super(id);
         this.columns = columns;
@@ -39,5 +41,6 @@ public class FormUpdatedEvent extends BaseEvent {
         this.rowMaxHeights = rowMaxHeights;
         this.columnMapping = columnMapping;
         this.definition = definition;
+        this.dataObjectUUID = dataObjectUUID;
     }
 }

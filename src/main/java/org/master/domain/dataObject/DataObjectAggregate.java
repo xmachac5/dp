@@ -42,10 +42,10 @@ public class DataObjectAggregate extends AggregateRoot {
                 createDataObjectCommand.description(),
                 createDataObjectCommand.trackChanges(),
                 createDataObjectCommand.softDelete(),
-                createDataObjectCommand.columns()
+                createDataObjectCommand.columns(),
+                createDataObjectCommand.hasForm()
         );
         aggregate.apply(event);
-        aggregate.hasForm = createDataObjectCommand.hasForm();
         return aggregate;
     }
 
@@ -92,6 +92,7 @@ public class DataObjectAggregate extends AggregateRoot {
 
     private void handle(final DataObjectCreatedEvent dataObjectCreatedEvent){
         this.name = dataObjectCreatedEvent.getName();
+        this.hasForm = dataObjectCreatedEvent.getHasForm();
         setAggregateData(
                 dataObjectCreatedEvent.getDescription(),
                 dataObjectCreatedEvent.getColumns(),

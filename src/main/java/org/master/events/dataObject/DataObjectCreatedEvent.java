@@ -18,6 +18,7 @@ public class DataObjectCreatedEvent extends BaseEvent {
     private Boolean trackChanges;
     private Boolean softDelete;
     private JsonNode columns;
+    private Boolean hasForm;
 
     @Builder
     @JsonCreator
@@ -27,7 +28,8 @@ public class DataObjectCreatedEvent extends BaseEvent {
             @JsonProperty("description") String description,
             @JsonProperty("trackChanges") Boolean trackChanges,
             @JsonProperty("softDelete") Boolean softDelete,
-            @JsonProperty("columns") JsonNode columns
+            @JsonProperty("columns") JsonNode columns,
+            @JsonProperty("hasForm") Boolean hasForm
     ) {
         super(id);
         this.name = name;
@@ -35,5 +37,6 @@ public class DataObjectCreatedEvent extends BaseEvent {
         this.description = description;
         this.trackChanges = trackChanges;
         this.softDelete = softDelete;
+        this.hasForm = hasForm;
     }
 }

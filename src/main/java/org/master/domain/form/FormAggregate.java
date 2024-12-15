@@ -38,6 +38,10 @@ public class FormAggregate extends AggregateRoot {
     public static FormAggregate createForm(CreateFormCommand createFormCommand) {
         UUID id = UUID.randomUUID(); // Generate a new UUID for the aggregate
         FormAggregate aggregate = new FormAggregate(id);
+        UUID dataObjectUUID = null;
+        if (createFormCommand.dataObjectsWriteModel() != null) {
+            dataObjectUUID = createFormCommand.dataObjectsWriteModel().getId();
+        }
         // Creating the FormCreatedEvent with all necessary data
         FormCreatedEvent event = new FormCreatedEvent(
                 id,
@@ -47,7 +51,8 @@ public class FormAggregate extends AggregateRoot {
                 createFormCommand.primaryLanguageId(),
                 createFormCommand.rowMaxHeights(),
                 createFormCommand.columnMapping(),
-                createFormCommand.definition()
+                createFormCommand.definition(),
+                dataObjectUUID
         );
         aggregate.apply(event);
         return aggregate;
@@ -56,6 +61,10 @@ public class FormAggregate extends AggregateRoot {
     // Factory method to create a new FormAggregate and UUID
     public static FormAggregate createForm(UUID id, CreateFormCommand createFormCommand) {
         FormAggregate aggregate = new FormAggregate(id);
+        UUID dataObjectUUID = null;
+        if (createFormCommand.dataObjectsWriteModel() != null) {
+            dataObjectUUID = createFormCommand.dataObjectsWriteModel().getId();
+        }
         // Creating the FormCreatedEvent with all necessary data
         FormCreatedEvent event = new FormCreatedEvent(
                 id,
@@ -65,15 +74,19 @@ public class FormAggregate extends AggregateRoot {
                 createFormCommand.primaryLanguageId(),
                 createFormCommand.rowMaxHeights(),
                 createFormCommand.columnMapping(),
-                createFormCommand.definition()
+                createFormCommand.definition(),
+                dataObjectUUID
         );
-        aggregate.dataObjectUUID = createFormCommand.dataObjectsWriteModel().getId();
         aggregate.apply(event);
         return aggregate;
     }
 
     public void updateForm(UpdateFormCommand updateFormCommand) {
         // Creating the FormUpdatedEvent with all necessary data
+        UUID dataObjectUUID = null;
+        if (updateFormCommand.dataObjectsWriteModel() != null) {
+            dataObjectUUID = updateFormCommand.dataObjectsWriteModel().getId();
+        }
         FormUpdatedEvent event = new FormUpdatedEvent(
                 updateFormCommand.id(),
                 updateFormCommand.columns(),
@@ -81,9 +94,9 @@ public class FormAggregate extends AggregateRoot {
                 updateFormCommand.primaryLanguageId(),
                 updateFormCommand.rowMaxHeights(),
                 updateFormCommand.columnMapping(),
-                updateFormCommand.definition()
+                updateFormCommand.definition(),
+                dataObjectUUID
         );
-        this.dataObjectUUID = updateFormCommand.dataObjectsWriteModel().getId();
         this.apply(event);
     }
 
@@ -126,7 +139,9 @@ public class FormAggregate extends AggregateRoot {
                 formCreatedEvent.getRowHeights(),
                 formCreatedEvent.getPrimaryLanguageId(),
                 formCreatedEvent.getRowMaxHeights(),
-                formCreatedEvent.getDefinition());
+                formCreatedEvent.getDefinition(),
+                formCreatedEvent.getDataObjectUUID()
+        );
     }
 
     private void handle(final FormUpdatedEvent formUpdatedEvent){
@@ -136,7 +151,8 @@ public class FormAggregate extends AggregateRoot {
                 formUpdatedEvent.getRowHeights(),
                 formUpdatedEvent.getPrimaryLanguageId(),
                 formUpdatedEvent.getRowMaxHeights(),
-                formUpdatedEvent.getDefinition());
+                formUpdatedEvent.getDefinition(),
+                formUpdatedEvent.getDataObjectUUID());
     }
 
     private void handle(){
@@ -144,12 +160,14 @@ public class FormAggregate extends AggregateRoot {
     }
 
     private void setAggregateData(JsonNode columnMapping, Integer columns, List<Integer> rowHeights,
-                                  UUID primaryLanguageId, List<Integer> rowMaxHeights, JsonNode definition){
+                                  UUID primaryLanguageId, List<Integer> rowMaxHeights, JsonNode definition,
+                                  UUID dataObjectUUID){
         this.columns = columns;
         this.rowHeights = rowHeights;
         this.primaryLanguageId = primaryLanguageId;
         this.rowMaxHeights = rowMaxHeights;
         this.columnMapping = columnMapping;
         this.definition = definition;
+        this.dataObjectUUID = dataObjectUUID;
     }
 }
