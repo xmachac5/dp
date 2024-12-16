@@ -26,13 +26,17 @@ public class TaskCommandResource {
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createDOTask(@Valid DOTaskCreateDTO DOTaskCreateDTO){
-        taskCommandHandler.handle(new CreateDOTaskCommand(
-                DOTaskCreateDTO.getName(),
-                DOTaskCreateDTO.getVariableMapping(),
-                DOTaskCreateDTO.getColumnsMapping(),
-                DOTaskCreateDTO.getDataObjectsWriteModel(),
-                DOTaskCreateDTO.getProcessVersionWriteModel()));
-        return Response.status(Response.Status.CREATED).build();
+        try {
+            taskCommandHandler.handle(new CreateDOTaskCommand(
+                    DOTaskCreateDTO.getName(),
+                    DOTaskCreateDTO.getVariableMapping(),
+                    DOTaskCreateDTO.getColumnsMapping(),
+                    DOTaskCreateDTO.getDataObjectsWriteModel(),
+                    DOTaskCreateDTO.getProcessVersionWriteModel()));
+            return Response.status(Response.Status.CREATED).build();
+        } catch (IllegalStateException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 
     @Operation(summary = "Create a new Screen task", description = "Creates a Screen task with the provided data")
@@ -41,12 +45,16 @@ public class TaskCommandResource {
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createScreenTask(@Valid ScreenTaskCreateDTO ScreenTaskCreateDTO){
-        taskCommandHandler.handle(new CreateScreenTaskCommand(
-                ScreenTaskCreateDTO.getName(),
-                ScreenTaskCreateDTO.getVariableMapping(),
-                ScreenTaskCreateDTO.getScreenWriteModel(),
-                ScreenTaskCreateDTO.getProcessVersionWriteModel()));
-        return Response.status(Response.Status.CREATED).build();
+        try {
+            taskCommandHandler.handle(new CreateScreenTaskCommand(
+                    ScreenTaskCreateDTO.getName(),
+                    ScreenTaskCreateDTO.getVariableMapping(),
+                    ScreenTaskCreateDTO.getScreenWriteModel(),
+                    ScreenTaskCreateDTO.getProcessVersionWriteModel()));
+            return Response.status(Response.Status.CREATED).build();
+        } catch (IllegalStateException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 
     @Operation(summary = "Create a new Script task", description = "Creates a Script task with the provided data")
@@ -55,12 +63,16 @@ public class TaskCommandResource {
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createScriptTask(@Valid ScriptTaskCreateDTO scriptTaskCreateDTO){
-        taskCommandHandler.handle(new CreateScriptTaskCommand(
-                scriptTaskCreateDTO.getName(),
-                scriptTaskCreateDTO.getVariableMapping(),
-                scriptTaskCreateDTO.getScriptWriteModel(),
-                scriptTaskCreateDTO.getProcessVersionWriteModel()));
-        return Response.status(Response.Status.CREATED).build();
+        try {
+            taskCommandHandler.handle(new CreateScriptTaskCommand(
+                    scriptTaskCreateDTO.getName(),
+                    scriptTaskCreateDTO.getVariableMapping(),
+                    scriptTaskCreateDTO.getScriptWriteModel(),
+                    scriptTaskCreateDTO.getProcessVersionWriteModel()));
+            return Response.status(Response.Status.CREATED).build();
+        } catch (IllegalStateException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 
     @Operation(summary = "Update DO task", description = "Update DO task with the provided data")

@@ -97,8 +97,44 @@ public class EventStore {
             eventPublisher.publish(event);
         }
 
+        // Mark changes as committed and published
+        aggregate.markChangesAsCommitted();
+        aggregate.markChangesAsPublished();
+    }
+
+    @Transactional
+    public void save(AggregateRoot aggregate){
+        List<BaseEvent> events = aggregate.getUncommittedChanges();
+        for (BaseEvent event : events) {
+            // Serialize the BaseEvent to JSON
+            String payload = eventSerializer.serialize(event);
+
+            // Persist the Event
+            Event persistentEvent = new Event(event, payload, aggregate.getVersion());
+            em.persist(persistentEvent);
+        }
+
         // Mark changes as committed
         aggregate.markChangesAsCommitted();
+    }
+
+    @Transactional
+    public void publish(AggregateRoot aggregate, EventPublisher eventPublisher){
+        List<BaseEvent> events = aggregate.getUnpublishedChanges();
+        for (BaseEvent event : events) {
+            // Serialize the BaseEvent to JSON
+            String payload = eventSerializer.serialize(event);
+
+            // Persist the Event
+            Event persistentEvent = new Event(event, payload, aggregate.getVersion());
+            em.persist(persistentEvent);
+
+            // Publish the Event
+            eventPublisher.publish(event);
+        }
+
+        // Mark changes as committed
+        aggregate.markChangesAsPublished();
     }
 
     // Method to load events for a given aggregate ID

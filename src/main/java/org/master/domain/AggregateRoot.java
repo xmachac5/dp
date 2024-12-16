@@ -14,6 +14,7 @@ public abstract class AggregateRoot {
     @Getter
     private int version; // Current version of the aggregate
     private final List<BaseEvent> uncommittedChanges = new ArrayList<>(); // Uncommitted domain events
+    private final List<BaseEvent> unpublishedChanges = new ArrayList<>(); // Uncommitted domain events
     private Boolean deleted = false; // setting deleted
 
     protected AggregateRoot(UUID id) {
@@ -41,6 +42,8 @@ public abstract class AggregateRoot {
 
         // Track the event as an uncommitted change
         this.uncommittedChanges.add(event);
+        // Track the event as an unpublished change
+        this.unpublishedChanges.add(event);
     }
 
     /**
@@ -66,6 +69,21 @@ public abstract class AggregateRoot {
     public void markChangesAsCommitted() {
         uncommittedChanges.clear();
     }
+
+    /**
+     * Mark all changes as published, clearing the unpublished events.
+     */
+    public void markChangesAsPublished() {
+        unpublishedChanges.clear();
+    }
+
+    /**
+     * Retrieve unpublished changes (newly generated events).
+     */
+    public List<BaseEvent > getUnpublishedChanges() {
+        return Collections.unmodifiableList(unpublishedChanges);
+    }
+
 
     /**
      * Abstract method to handle events, to be implemented by concrete aggregates.
