@@ -34,7 +34,7 @@ public class ScreenCommandResourceTest {
                        "name": "new_screen",
                        "columns": 0,
                        "rowHeights": [
-                         0
+                         8
                        ],
                        "primaryLanguageId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
                        "url": "T",

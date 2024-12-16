@@ -25,7 +25,7 @@ public class DataObjectCommandHandler {
 
 
     @Transactional
-    public void handle(CreateDataObjectCommand command) {
+    public UUID handle(CreateDataObjectCommand command) {
 
         // Use factory method to create a new aggregate
         DataObjectAggregate aggregate = DataObjectAggregate.createDataObject(command);
@@ -35,6 +35,7 @@ public class DataObjectCommandHandler {
 
         dataObjectWriteRepository.create(aggregate.getId(), command, 1);
 
+        return aggregate.getId();
     }
 
     @Transactional

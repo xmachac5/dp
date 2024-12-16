@@ -31,7 +31,7 @@ public class FormCommandHandler {
 
 
     @Transactional
-    public void handle(CreateFormCommand command) {
+    public UUID handle(CreateFormCommand command) {
 
         // Use factory method to create a new aggregate
         FormAggregate aggregate = FormAggregate.createForm(command);
@@ -40,6 +40,8 @@ public class FormCommandHandler {
         eventStore.saveAndPublish(aggregate);
 
         formWriteRepository.create(aggregate.getId(), command);
+
+        return aggregate.getId();
 
     }
 
@@ -80,7 +82,7 @@ public class FormCommandHandler {
     }
 
     @Transactional
-    public void handle(CreateFormWithDOCommand command) {
+    public UUID handle(CreateFormWithDOCommand command) {
 
         CreateDataObjectCommand createDataObjectCommand = new CreateDataObjectCommand(
                 command.name(),
@@ -118,6 +120,8 @@ public class FormCommandHandler {
         eventStore.saveAndPublish(formAggregate);
 
         formWriteRepository.create(formAggregate.getId(), createFormCommand);
+
+        return formAggregate.getId();
 
     }
 

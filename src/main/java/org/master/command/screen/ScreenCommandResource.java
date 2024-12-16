@@ -30,11 +30,13 @@ public class ScreenCommandResource {
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createScreen(@Valid ScreenCreateDTO screenCreateDTO){
-        screenCommandHandler.handle(new CreateScreenCommand(screenCreateDTO.getData(), screenCreateDTO.getName(),
+        UUID newScreen = screenCommandHandler.handle(new CreateScreenCommand(screenCreateDTO.getData(), screenCreateDTO.getName(),
                 screenCreateDTO.getColumns(), screenCreateDTO.getRowHeights(), screenCreateDTO.getPrimaryLanguageId(),
                 screenCreateDTO.getUrl(), screenCreateDTO.getRowMaxHeights(), screenCreateDTO.getLocals(), screenCreateDTO.getVariableInit(),
                 screenCreateDTO.getVariableInitMapping(), screenCreateDTO.getBackground(), screenCreateDTO.getTitle()));
-        return Response.status(Response.Status.CREATED).build();
+        return Response.status(Response.Status.CREATED)
+                .entity(newScreen)
+                .build();
     }
 
     @Operation(summary = "Update new screen", description = "Update screen with the provided data")

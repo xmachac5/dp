@@ -27,13 +27,15 @@ public class TaskCommandResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createDOTask(@Valid DOTaskCreateDTO DOTaskCreateDTO){
         try {
-            taskCommandHandler.handle(new CreateDOTaskCommand(
+            UUID newTask = taskCommandHandler.handle(new CreateDOTaskCommand(
                     DOTaskCreateDTO.getName(),
                     DOTaskCreateDTO.getVariableMapping(),
                     DOTaskCreateDTO.getColumnsMapping(),
                     DOTaskCreateDTO.getDataObjectsWriteModel(),
                     DOTaskCreateDTO.getProcessVersionWriteModel()));
-            return Response.status(Response.Status.CREATED).build();
+            return Response.status(Response.Status.CREATED)
+                    .entity(newTask)
+                    .build();
         } catch (IllegalStateException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
@@ -46,12 +48,14 @@ public class TaskCommandResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createScreenTask(@Valid ScreenTaskCreateDTO ScreenTaskCreateDTO){
         try {
-            taskCommandHandler.handle(new CreateScreenTaskCommand(
+            UUID newTask = taskCommandHandler.handle(new CreateScreenTaskCommand(
                     ScreenTaskCreateDTO.getName(),
                     ScreenTaskCreateDTO.getVariableMapping(),
                     ScreenTaskCreateDTO.getScreenWriteModel(),
                     ScreenTaskCreateDTO.getProcessVersionWriteModel()));
-            return Response.status(Response.Status.CREATED).build();
+            return Response.status(Response.Status.CREATED)
+                    .entity(newTask)
+                    .build();
         } catch (IllegalStateException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
@@ -64,12 +68,14 @@ public class TaskCommandResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createScriptTask(@Valid ScriptTaskCreateDTO scriptTaskCreateDTO){
         try {
-            taskCommandHandler.handle(new CreateScriptTaskCommand(
+            UUID newTask = taskCommandHandler.handle(new CreateScriptTaskCommand(
                     scriptTaskCreateDTO.getName(),
                     scriptTaskCreateDTO.getVariableMapping(),
                     scriptTaskCreateDTO.getScriptWriteModel(),
                     scriptTaskCreateDTO.getProcessVersionWriteModel()));
-            return Response.status(Response.Status.CREATED).build();
+            return Response.status(Response.Status.CREATED)
+                    .entity(newTask)
+                    .build();
         } catch (IllegalStateException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }

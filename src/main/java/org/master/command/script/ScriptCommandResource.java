@@ -30,9 +30,11 @@ public class ScriptCommandResource {
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createScript(@Valid ScriptCreateDTO scriptCreateDTO){
-        scriptCommandHandler.handle(new CreateScriptCommand(scriptCreateDTO.getVariables(), scriptCreateDTO.getName(),
+        UUID newScript = scriptCommandHandler.handle(new CreateScriptCommand(scriptCreateDTO.getVariables(), scriptCreateDTO.getName(),
                 scriptCreateDTO.getCode()));
-        return Response.status(Response.Status.CREATED).build();
+        return Response.status(Response.Status.CREATED)
+                .entity(newScript)
+                .build();
     }
 
     @Operation(summary = "Update script", description = "Update script with the provided data")

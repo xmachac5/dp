@@ -23,7 +23,7 @@ public class ProcessCommandHandler {
 
 
     @Transactional
-    public void handle(CreateProcessCommand command) {
+    public UUID handle(CreateProcessCommand command) {
 
         // Use factory method to create a new aggregate
         ProcessAggregate aggregate = ProcessAggregate.createProcess(command);
@@ -32,6 +32,8 @@ public class ProcessCommandHandler {
         eventStore.saveAndPublish(aggregate);
 
         processWriteRepository.create(aggregate.getId(), command);
+
+        return aggregate.getId();
 
     }
 

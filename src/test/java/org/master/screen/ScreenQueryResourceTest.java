@@ -6,6 +6,8 @@ import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.master.query.screen.ScreenQueryResource;
 
+import java.util.List;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
@@ -18,7 +20,7 @@ public class ScreenQueryResourceTest {
         // Step 1: Retrieve the list of screens
         JsonPath response = given()
                 .when()
-                .get("/screens")
+                .get("/list")
                 .then()
                 .statusCode(200) // Expecting HTTP 200 OK
                 .extract()
@@ -31,10 +33,17 @@ public class ScreenQueryResourceTest {
         given()
                 .pathParam("id", lastScreenId)
                 .when()
-                .get("/screens/{id}")
+                .get("/{id}")
                 .then()
                 .statusCode(200) // Expecting HTTP 200 OK
                 .body("id", is(lastScreenId))
-                .body("screenName", is("Dynamic Screen Test"));
+                .body("rowHeights", is(List.of(8)))
+                .body("locals.variables.size()", is(2))
+                .body("locals.variables[0].name", is("variable_1"))
+                .body("locals.variables[0].data_type", is("Integer"))
+                .body("locals.variables[0].type", is("input"))
+                .body("locals.variables[1].name", is("variable_2"))
+                .body("locals.variables[1].data_type", is("String"))
+                .body("locals.variables[1].type", is("local"));
     }
 }

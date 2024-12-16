@@ -29,7 +29,7 @@ public class FormCommandResource {
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createForm(@Valid FormCreateDTO formCreateDTO){
-        formCommandHandler.handle(new CreateFormCommand(
+        UUID newForm = formCommandHandler.handle(new CreateFormCommand(
                 formCreateDTO.getName(),
                 formCreateDTO.getColumns(),
                 formCreateDTO.getRowHeights(),
@@ -39,7 +39,9 @@ public class FormCommandResource {
                 formCreateDTO.getDefinition(),
                 null
         ));
-        return Response.status(Response.Status.CREATED).build();
+        return Response.status(Response.Status.CREATED)
+                .entity(newForm)
+                .build();
     }
 
     @Operation(summary = "Update form", description = "Update form with the provided data")
@@ -89,7 +91,7 @@ public class FormCommandResource {
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createFormWithDO(@Valid FormCreateWithDODTO formCreateWithDODTO){
-        formCommandHandler.handle(new CreateFormWithDOCommand(
+        UUID newFormDO = formCommandHandler.handle(new CreateFormWithDOCommand(
                 formCreateWithDODTO.getName(),
                 formCreateWithDODTO.getColumns(),
                 formCreateWithDODTO.getRowHeights(),
@@ -100,7 +102,9 @@ public class FormCommandResource {
                 formCreateWithDODTO.getTrackChanges(),
                 formCreateWithDODTO.getSoftDelete()
         ));
-        return Response.status(Response.Status.CREATED).build();
+        return Response.status(Response.Status.CREATED)
+                .entity(newFormDO)
+                .build();
     }
 
     @Operation(summary = "Update form with nev version of data object", description = "Update form with the provided data and creates new version of data object")

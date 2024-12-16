@@ -31,7 +31,7 @@ public class DataObjectCommandResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createDataObject(@Valid DataObjectCreateDTO dataObjectCreateDTO){
         try {
-            dataObjectCommandHandler.handle(new CreateDataObjectCommand(
+            UUID newDO = dataObjectCommandHandler.handle(new CreateDataObjectCommand(
                     dataObjectCreateDTO.getName(),
                     dataObjectCreateDTO.getDescription(),
                     dataObjectCreateDTO.getTrackChanges(),
@@ -39,7 +39,9 @@ public class DataObjectCommandResource {
                     dataObjectCreateDTO.getColumns(),
                     false
             ));
-            return Response.status(Response.Status.CREATED).build();
+            return Response.status(Response.Status.CREATED)
+                    .entity(newDO)
+                    .build();
         }
         catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();

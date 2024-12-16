@@ -26,10 +26,12 @@ public class ProcessCommandResource {
     @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createProcess(@Valid ProcessCreateDTO processCreateDTO){
-        processCommandHandler.handle(new CreateProcessCommand(
+        UUID newProcess = processCommandHandler.handle(new CreateProcessCommand(
                 processCreateDTO.getName(),
                 processCreateDTO.getVariables()));
-        return Response.status(Response.Status.CREATED).build();
+        return Response.status(Response.Status.CREATED)
+                .entity(newProcess)
+                .build();
     }
 
     @Operation(summary = "Update process", description = "Update process with the provided data")

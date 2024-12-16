@@ -26,7 +26,7 @@ public class TaskCommandHandler {
     ProcessWriteRepository processWriteRepository;
 
     @Transactional
-    public void handle(CreateDOTaskCommand command) {
+    public UUID handle(CreateDOTaskCommand command) {
 
         //Find process write model by version uuid
         ProcessWriteModel processWriteModel = processWriteRepository.findByVersionUuid(command.processVersionWriteModel());
@@ -38,11 +38,13 @@ public class TaskCommandHandler {
         eventStore.saveAndPublish(aggregate);
 
         taskWriteRepository.create(aggregate.getId(), command);
+
+        return aggregate.getId();
 
     }
 
     @Transactional
-    public void handle(CreateScreenTaskCommand command) {
+    public UUID handle(CreateScreenTaskCommand command) {
 
         //Find process write model by version uuid
         ProcessWriteModel processWriteModel = processWriteRepository.findByVersionUuid(command.processVersionWriteModel());
@@ -54,11 +56,13 @@ public class TaskCommandHandler {
         eventStore.saveAndPublish(aggregate);
 
         taskWriteRepository.create(aggregate.getId(), command);
+
+        return aggregate.getId();
 
     }
 
     @Transactional
-    public void handle(CreateScriptTaskCommand command) {
+    public UUID handle(CreateScriptTaskCommand command) {
 
         //Find process write model by version uuid
         ProcessWriteModel processWriteModel = processWriteRepository.findByVersionUuid(command.processVersionWriteModel());
@@ -70,6 +74,8 @@ public class TaskCommandHandler {
         eventStore.saveAndPublish(aggregate);
 
         taskWriteRepository.create(aggregate.getId(), command);
+
+        return aggregate.getId();
 
     }
 

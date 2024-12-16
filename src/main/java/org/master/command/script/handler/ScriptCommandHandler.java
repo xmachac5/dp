@@ -25,7 +25,7 @@ public class ScriptCommandHandler {
 
 
     @Transactional
-    public void handle(CreateScriptCommand command) {
+    public UUID handle(CreateScriptCommand command) {
 
         // Use factory method to create a new aggregate
         ScriptAggregate aggregate = ScriptAggregate.createScript(command);
@@ -34,6 +34,8 @@ public class ScriptCommandHandler {
         eventStore.saveAndPublish(aggregate);
 
         scriptWriteRepository.create(aggregate.getId(), command);
+
+        return aggregate.getId();
 
     }
 

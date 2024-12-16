@@ -25,7 +25,7 @@ public class ScreenCommandHandler {
 
 
     @Transactional
-    public void handle(CreateScreenCommand command) {
+    public UUID handle(CreateScreenCommand command) {
 
         // Use factory method to create a new aggregate
         ScreenAggregate aggregate = ScreenAggregate.createScreen(command);
@@ -34,6 +34,8 @@ public class ScreenCommandHandler {
         eventStore.saveAndPublish(aggregate);
 
         screenWriteRepository.create(aggregate.getId(), command);
+
+        return aggregate.getId();
 
     }
 
